@@ -1,3 +1,10 @@
+{{/* Recommend trigger type : command
+     Trigger : bj
+     Copyright (c): Shadow21A, 2021
+     License: MIT
+     Repository: https://github.com/Shadow21AR/Yag-CC
+*/}}
+
 {{ if not .ExecData }}
     {{ if $db := (dbGet .User.ID "bj") }}
         {{ sendMessage nil (printf "%s | Please finish your previous game.\nCan't find it??\nHere: %s" .User.Mention (getMessage $db.Value.channel_id $db.Value.msg_id).Link ) }}
