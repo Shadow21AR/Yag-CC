@@ -10,7 +10,8 @@ Add all of these Custom Commands (main-bj.go, reaction-bj.go, other-bj.go) to yo
 - -bal @user : to check user balance
 
 Admins can add credits to users by
-- -setb @user <amount> or -setbalance @user <amount> 
+- -setb @user \<amount\> or -setbalance @user \<amount\> 
+- Note: if u don't provide amount , default is set to 0.
 
 > It's my first time creating this.
 > If u got any ideas / bugs to share , contact me on discord : Shadow21A🌟#3030 or u can find me on yagpdb support server.
