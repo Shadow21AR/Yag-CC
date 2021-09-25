@@ -1,7 +1,7 @@
 # Yag-CC
 Yagpdb BLACKJACK CC
 
-Add all of these ccs (main.go, reaction.go, other.go) to your server.
+Add all of these Custom Commands (main.go, reaction.go, other.go) to your server.
 
 # Commands 
 - -bj or -blackjack : to to play the game without any bets.
