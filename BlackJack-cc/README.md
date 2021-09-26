@@ -4,7 +4,17 @@ Yagpdb BLACKJACK CC
 Add all of these Custom Commands (main-bj.go, reaction-bj.go, other-bj.go) to your server.
 
 # Commands 
-- -bj or -blackjack : to to play the game without any bets.
+- -bj or -blackjack : to to play the game without any bets. <details>
+
+  <summary>Blackjack Results</summary><details>
+
+  <img src="https://github.com/Shadow21AR/Yag-CC/blob/73b851fc2d7acca13b0ea43c8ef2a0f9f62b8c04/BlackJack-cc/Images/IMG_20210927_012214.jpg" name="Loss">
+
+  <img src="https://github.com/Shadow21AR/Yag-CC/blob/73b851fc2d7acca13b0ea43c8ef2a0f9f62b8c04/BlackJack-cc/Images/IMG_20210927_012231.jpg" name="Win">
+
+  <img src="https://github.com/Shadow21AR/Yag-CC/blob/73b851fc2d7acca13b0ea43c8ef2a0f9f62b8c04/BlackJack-cc/Images/IMG_20210927_012242.jpg" name="Tie">
+
+</details>
 - -bj \<amount\> or -blackjack \<amount\> : to play blackjack with bet.
 - -bal : to check balance <img src="https://github.com/Shadow21AR/Yag-CC/blob/1881036978eb856a423ad7115d4fd1077b70ab0e/BlackJack-cc/Images/IMG_20210925_232754.jpg">
 - -bal @user : to check user balance
