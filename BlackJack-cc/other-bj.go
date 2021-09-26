@@ -14,7 +14,7 @@
  {{ $value = $args.Get 1 | toInt }}
 {{ end }}
 {{ if eq (lower .Cmd) "-bal" }}
- {{ sendMessage nil (print $user.Mention "'s balance is : " (or (dbGet $user.ID "CREDIT").Value 0)) }}
+ {{ sendMessage nil (print $user.Mention "'s balance is : " (or (toInt (dbGet $user.ID "CREDIT").Value) 0)) }}
 {{ else }}
  {{/* Black Wolf's permission checker here ;) */}}
  {{$perms := "Administrator"}}
