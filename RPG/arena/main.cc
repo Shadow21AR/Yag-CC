@@ -9,6 +9,10 @@
 {{$cookie := "🍪"}}
 
 {{/* ----- don't edit if u don't know what you doing -------*/}}
+{{/* Copyright (c): Shadow21A, 2021
+     License: MIT
+     Repository: https://github.com/Shadow21AR/Yag-CC
+*/}}
 {{if not .ExecData}}
 	{{$list := ""}}{{$count := 1}}{{$msg := ""}}
 	{{$alist := cslice.AppendSlice (or (dbGet .Channel.ID "alist").Value cslice)}}
