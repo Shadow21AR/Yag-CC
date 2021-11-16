@@ -35,7 +35,7 @@
 				{{$msg = sendMessageRetID nil (cembed $embed)}}
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
 				{{addReactions $success}}
-				{{if eq (len $alist) 2}}
+				{{if eq (len $alist) 10}}
 					{{deleteMessage nil $msg 1}}
 					{{sendMessage nil (complexMessage "content" (print "List sent to <#" $arena ">.") "embed" (cembed "title" "Boosted Arena" "timestamp" currentTime "thumbnail" (sdict "url" $icon) "description" $list))}}
 					{{dbDel .Channel.ID "alist"}}
