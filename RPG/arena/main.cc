@@ -49,11 +49,11 @@
 					{{end}}
 					{{addMessageReactions $arena (sendMessageRetID $arena (printf "%s\n\n```\nRpg arena %s```" $list1 $list1)) $cookie}}
 				{{end}}
+				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "you are already in list") 2}}
 				{{addReactions $error}}
 			{{end}}
-			{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 		{{else if eq $cmd "leave"}}
 			{{if (in $alist .User.ID)}}
 				{{$new := cslice}}
@@ -71,6 +71,7 @@
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
 				{{dbSet .Channel.ID "alist" $new}}
 				{{addReactions $success}}
+				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "you are not in list") 3}}
 			{{end}}
