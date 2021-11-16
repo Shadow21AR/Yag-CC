@@ -79,7 +79,7 @@
 			{{end}}
 			{{$embed.Set "description" (print $list "\n" $helpM "List are sent to <#" $arena ">")}}{{$embed.Set "title" (print "🍪 __" .Guild.Name " Arena List [" (len $alist) "/10]__ 🍪")}}
 {{if $lmsg := dbGet .Channel.ID "lmsg"}}{{deleteMessage nil $lmsg.Value 1}}{{end}}
-			{{deleteMessage nil (sendMessageRetID nil (cembed $embed)) 100}}
+			{{deleteMessage nil (sendMessageRetID nil (cembed $embed)) 30}}
 		{{else if eq $cmd "reset"}}
 			{{if and (hasRoleID $mod) $mod}}
 				{{dbDel .Channel.ID "alist"}}
@@ -97,6 +97,6 @@
 	{{deleteMessage nil .ExecData.msg 1}}
 	{{dbDel .Channel.ID "alist"}}
 󠂪󠂪󠂪󠂪	{{dbDel .Channel.ID "smsg"}}
-	{{sendMessage nil (print "Arena got reset due to inactivity!\nNo player joined the list for past " $expiryTime " minutes.")}}
+	{{deleteMessage nil (sendMessage nil (print "Arena got reset due to inactivity!\nNo player joined the list for past " $expiryTime " minutes.")) 30}}
 {{end}}
 {{/* --------------- End of code --------------- */}}
