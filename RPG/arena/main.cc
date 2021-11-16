@@ -86,7 +86,7 @@
 		{{else if eq $cmd "reset"}}
 			{{if and (hasRoleID $mod) $mod}}
 				{{dbDel .Channel.ID "alist"}}
-			 	{{deleteMessage nil (dbGet .Channel.ID "smsg").Value 1}}
+			 	{{if $smsg := dbGet .Channel.ID "smsg"}}{{deleteMessage nil $smsg.Value 1}}{{end}}
 			󠂪󠂪󠂪󠂪	{{dbDel .Channel.ID "smsg"}}
 				{{deleteMessage nil (sendMessageRetID nil "Deleted the list!") 5}}
 				{{addReactions $success}}
