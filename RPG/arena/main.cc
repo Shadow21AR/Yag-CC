@@ -18,7 +18,7 @@
 	{{$alist := cslice.AppendSlice (or (dbGet .Channel.ID "alist").Value cslice)}}
 	{{$ex := or (and (reFind "a_" .Guild.Icon) "gif" ) "png" }}
 	{{$icon := print "https://cdn.discordapp.com/icons/" .Guild.ID "/" .Guild.Icon "." $ex "?size=1024" }}
-	{{$helpM := "```\n• a join  : To join the list.\n• a leave : To leave the list.\n• a list  : To view the list```"}}
+	{{$helpM := "```\n• a join  : To join the list\n• a leave : To leave the list\n• a list  : To view the list```"}}
 	{{$embed := sdict "author" (sdict "name" (print .Guild.Name) "icon_url" $icon) "timestamp" currentTime }}
 
 	{{if and .CmdArgs (eq $join .Channel.ID)}}
