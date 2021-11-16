@@ -84,7 +84,7 @@
 {{if $lmsg := dbGet .Channel.ID "lmsg"}}{{deleteMessage nil $lmsg.Value 1}}{{end}}
 			{{deleteMessage nil (sendMessageRetID nil (cembed $embed)) $alistcd}}
 		{{else if eq $cmd "reset"}}
-			{{if and (hasRoleID $mod) $mod}}
+			{{if hasRoleID $mod}}
 				{{dbDel .Channel.ID "alist"}}
 			 	{{if $smsg := dbGet .Channel.ID "smsg"}}{{deleteMessage nil $smsg.Value 1}}{{end}}
 			󠂪󠂪󠂪󠂪	{{dbDel .Channel.ID "smsg"}}
@@ -95,7 +95,7 @@
 				{{addReactions $error}}
 			{{end}}
 		{{end}}
-		{{deleteTrigger 3}}
+		{{deleteTrigger 3}}{{deleteResponse 1}}
 	{{end}}
 {{else}}
 	{{deleteMessage nil .ExecData.msg 1}}
