@@ -1,7 +1,7 @@
-{{$join := 909670733406425118 }} {{/* <-- replace ##### with Arena join channel ID */}}
-{{$arena := 909838914225856573 }} {{/* <-- replace ##### with Arena channel ID */}}
-{{$mod := 875365958326292482  }} {{/* <-- replace &&&&& with mode role ID */}}
-{{$arenaRole := 902269461543911494 }} {{/* <-- replace &&&&& with role ID that unlocks #arena channel */}}
+{{$join := ###### }} {{/* <-- replace ##### with Arena join channel ID */}}
+{{$arena := ###### }} {{/* <-- replace ##### with Arena channel ID */}}
+{{$mod := &&&&&&  }} {{/* <-- replace &&&&& with mode role ID */}}
+{{$arenaRole := &&&&&&&& }} {{/* <-- replace &&&&& with role ID that unlocks #arena channel */}}
 
 {{$expiryTime := 15}} {{/* time in minutes to reset arena list after being inactive */}}
 {{$success := "✅"}}
