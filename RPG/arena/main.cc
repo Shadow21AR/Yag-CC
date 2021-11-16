@@ -58,9 +58,9 @@
 			{{if (in $alist .User.ID)}}
 				{{$new := cslice}}
 				{{range $alist}}
-					{{if not (eq (toInt .) (toInt $.User.ID))}}
-						{{$new = $new.Append (toInt .)}}
-					{{end}}
+					{{- if not (eq (toInt .) (toInt $.User.ID)) -}}
+						{{- $new = $new.Append (toInt .) -}}
+					{{- end -}}
 				{{end}}
 				{{range $new}}
 					{{- $list = printf "%s`[%02d]` <@%d>\n" $list $count .}}{{$count = add 1 $count -}}
