@@ -19,7 +19,7 @@
 	{{$ex := or (and (reFind "a_" .Guild.Icon) "gif" ) "png" }}
 	{{$icon := print "https://cdn.discordapp.com/icons/" .Guild.ID "/" .Guild.Icon "." $ex "?size=1024" }}
 	{{$helpM := "```\n• a join  : To join the list.\n• a leave : To leave the list.\n• a list  : To view the list```"}}
-	{{$embed := sdict "author" (sdict "name" (print .Guild.Name) "icon_url" $icon) "timestamp" currentTime "footer" (sdict "text" "\"a help\" for help")}}
+	{{$embed := sdict "author" (sdict "name" (print .Guild.Name) "icon_url" $icon) "timestamp" currentTime }}
 
 	{{if and .CmdArgs (eq $join .Channel.ID)}}
 		{{$cmd := index .CmdArgs 0 | lower}}
@@ -35,7 +35,7 @@
 				{{$msg = sendMessageRetID nil (cembed $embed)}}
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
 				{{addReactions $success}}
-				{{if eq (len $alist) 10}}
+				{{if eq (len $alist) 2}}
 					{{deleteMessage nil $msg 1}}
 					{{sendMessage nil (complexMessage "content" (print "List sent to <#" $arena ">.") "embed" (cembed "title" "Boosted Arena" "timestamp" currentTime "thumbnail" (sdict "url" $icon) "description" $list))}}
 					{{dbDel .Channel.ID "alist"}}
@@ -90,10 +90,6 @@
 				{{deleteMessage nil (sendMessageRetID nil "You don't have permissions to reset list!") 5}}
 				{{addReactions $error}}
 			{{end}}
-		{{else if eq $cmd "help"}}
-			{{$embed.Set "title" "Arena Help" }}
-			{{$embed.Set "description" (print "1.  `a join` : To join the list.\n2. `a leave` : To leave the list.\n3. `a reset`: To reset the list. (Need Mod role!).\n4. `a list` : To view the list")}}
-			{{deleteMessage nil (sendMessageRetID nil (complexMessage "content" .User.Mention "embed" (cembed $embed))) 60}}
 		{{end}}
 		{{deleteTrigger 3}}
 	{{end}}
