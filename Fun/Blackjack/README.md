@@ -17,8 +17,11 @@ Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Y
 - `-bal @user` : to check user balance <details> <summary> -bal </summary> <img src="https://github.com/Shadow21AR/Yag-CC/blob/38ffe96b33a21783209a042c9e6cf96e480f0f7f/img/Blackjack/bal.jpg"> </details>
 
 ### Admins can add credits to users by
-- `-setb @user \<amount\>` or `-setbalance @user \<amount\>` 
-- Note: if u don't provide amount , default is set to 0. <details> <summary>-setb</summary> <img src="https://github.com/Shadow21AR/Yag-CC/blob/38ffe96b33a21783209a042c9e6cf96e480f0f7f/img/Blackjack/setb.jpg"> </details>
+- `-setb @user \<amount\>` : to SET the balance.  
+
+  *Note: if u don't provide amount , default is set to 0.*
+- `-giveb @user \<amount\>` : to ADD the balance. 
+   <details> <summary>-setb</summary> <img src="https://github.com/Shadow21AR/Yag-CC/blob/38ffe96b33a21783209a042c9e6cf96e480f0f7f/img/Blackjack/setb.jpg"> </details>
 
 
 
