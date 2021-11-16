@@ -7,6 +7,7 @@
 {{$success := "✅"}}
 {{$error := "❌"}}
 {{$cookie := "🍪"}}
+{{$alistcd := 3}} {{/* delay in SECONDS */}}
 
 {{/* ----- don't edit if u don't know what you doing -------*/}}
 {{/* Copyright (c): Shadow21A, 2021
@@ -73,13 +74,14 @@
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "you are not in list") 3}}
 			{{end}}
+			{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}
 		{{else if eq $cmd "list"}}
 			{{range $alist}}
 				{{- $list = printf "%s`[%02d]` <@%d>\n" $list $count .}}{{$count = add 1 $count -}}
 			{{end}}
 			{{$embed.Set "description" (print $list "\n" $helpM "List are sent to <#" $arena ">")}}{{$embed.Set "title" (print "🍪 __" .Guild.Name " Arena List [" (len $alist) "/10]__ 🍪")}}
 {{if $lmsg := dbGet .Channel.ID "lmsg"}}{{deleteMessage nil $lmsg.Value 1}}{{end}}
-			{{deleteMessage nil (sendMessageRetID nil (cembed $embed)) 30}}
+			{{deleteMessage nil (sendMessageRetID nil (cembed $embed)) $alistcd}}
 		{{else if eq $cmd "reset"}}
 			{{if and (hasRoleID $mod) $mod}}
 				{{dbDel .Channel.ID "alist"}}
