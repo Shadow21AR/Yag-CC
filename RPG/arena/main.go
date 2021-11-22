@@ -22,7 +22,7 @@
 	{{$helpM := "```\n• a join  : To join the list\n• a leave : To leave the list\n• a list  : To view the list```"}}
 	{{$embed := sdict "author" (sdict "name" (print .Guild.Name) "icon_url" $icon) "timestamp" currentTime }}
 
-	{{if and .CmdArgs (eq $join .Channel.ID)}}
+ {{if and .CmdArgs (eq $join .Channel.ID)}}
 		{{$cmd := index .CmdArgs 0 | lower}}
 		{{if and (eq $cmd "join") (le (len $alist) 10)}}
 			{{if not (in $alist .User.ID)}}
@@ -35,7 +35,6 @@
 				{{if $smsg := dbGet .Channel.ID "smsg"}}{{deleteMessage nil $smsg.Value 1}}{{end}}
 				{{$msg = sendMessageRetID nil (cembed $embed)}}
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
-				{{addReactions $success}}
 				{{if eq (len $alist) 10}}
 					{{deleteMessage nil $msg 1}}
 					{{sendMessage nil (complexMessage "content" (print "List sent to <#" $arena ">.") "embed" (cembed "title" "Boosted Arena" "timestamp" currentTime "thumbnail" (sdict "url" $icon) "description" $list))}}
@@ -47,12 +46,12 @@
 						{{- takeRoleID . $arenaRole 180 -}}
 						{{- $list1 = printf "%s<@%d> " $list1 . -}}
 					{{end}}
-					{{addMessageReactions $arena (sendMessageRetID $arena (printf "%s\n\n```\nRpg arena %s```" $list1 $list1)) $cookie}}
+					{{sendMessage $arena $list1}}
+					{{addMessageReactions $arena (sendMessageRetID $arena (printf "```\nRpg arena %s```" $list1)) $cookie}}
 				{{end}}
 				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "you are already in list") 2}}
-				{{addReactions $error}}
 			{{end}}
 		{{else if eq $cmd "leave"}}
 			{{if (in $alist .User.ID)}}
@@ -70,12 +69,10 @@
 				{{$msg = sendMessageRetID nil (cembed $embed)}}
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
 				{{dbSet .Channel.ID "alist" $new}}
-				{{addReactions $success}}
 				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "you are not in list") 3}}
 			{{end}}
-			{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}
 		{{else if eq $cmd "list"}}
 			{{range $alist}}
 				{{- $list = printf "%s`[%02d]` <@%d>\n" $list $count .}}{{$count = add 1 $count -}}
@@ -87,20 +84,18 @@
 			{{if hasRoleID $mod}}
 				{{dbDel .Channel.ID "alist"}}
 			 	{{if $smsg := dbGet .Channel.ID "smsg"}}{{deleteMessage nil $smsg.Value 1}}{{end}}
-			󠂪󠂪󠂪󠂪	{{dbDel .Channel.ID "smsg"}}
+				{{dbDel .Channel.ID "smsg"}}
 				{{deleteMessage nil (sendMessageRetID nil "Deleted the list!") 5}}
-				{{addReactions $success}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "You don't have permissions to reset list!") 5}}
-				{{addReactions $error}}
 			{{end}}
 		{{end}}
-		{{deleteTrigger 3}}{{deleteResponse 1}}
+		{{deleteTrigger 2}}
 	{{end}}
 {{else}}
 	{{deleteMessage nil .ExecData.msg 1}}
 	{{dbDel .Channel.ID "alist"}}
-󠂪󠂪󠂪󠂪	{{dbDel .Channel.ID "smsg"}}
+	{{dbDel .Channel.ID "smsg"}}
 	{{deleteMessage nil (sendMessage nil (print "Arena got reset due to inactivity!\nNo player joined the list for past " $expiryTime " minutes.")) 30}}
 {{end}}
 {{/* --------------- End of code --------------- */}}
