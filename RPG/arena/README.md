@@ -6,7 +6,7 @@
 ### `Trigger type` : `starts with` 
 ### `trigger` : `a` 
 
-Copy the [main.cc](https://github.com/Shadow21AR/Yag-CC/blob/main/RPG/arena/main.cc) to dashboard and configure the top part of the code.
+Copy the [main.cc](https://github.com/Shadow21AR/Yag-CC/blob/main/RPG/arena/main.go) to dashboard and configure the top part of the code.
 #
 
 ## Configurable code:
