@@ -4,8 +4,6 @@
 {{$arenaRole := &&&&&&&& }} {{/* <-- replace &&&&& with role ID that unlocks #arena channel */}}
 
 {{$expiryTime := 15}} {{/* time in minutes to reset arena list after being inactive */}}
-{{$success := "✅"}}
-{{$error := "❌"}}
 {{$cookie := "🍪"}}
 {{$alistcd := 3}} {{/* delay in SECONDS */}}
 
