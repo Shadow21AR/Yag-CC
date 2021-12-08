@@ -43,7 +43,7 @@
 						{{- takeRoleID . $arenaRole 180 -}}
 						{{- $list1 = printf "%s<@%d> " $list1 . -}}
 					{{end}}
-					{{$fembed := cembed "title" "RPG ARENA" "description" (printf "rpg arena %s" $list1) "footer" (sdict "text" "Note to host: Dont forget to remove your ID.")}}
+					{{$fembed := cembed "description" (printf "```\npg arena %s```" $list1) "footer" (sdict "text" "Note to host: Dont forget to remove your ID.")}}
 					{{sendMessage $arena $list1}}
 					{{addMessageReactions $arena (sendMessageRetID $arena $fembed) $cookie}}
 				{{end}}
@@ -78,6 +78,8 @@
 			{{$embed.Set "description" (print $list "\n" $helpM "List are sent to <#" $arena ">")}}{{$embed.Set "title" (print "🍪 __" .Guild.Name " Arena List [" (len $alist) "/10]__ 🍪")}}
 {{if $lmsg := dbGet .Channel.ID "lmsg"}}{{deleteMessage nil $lmsg.Value 1}}{{end}}
 			{{deleteMessage nil (sendMessageRetID nil (cembed $embed)) $alistcd}}
+		{{else if eq $cmd "hide"}}
+			{{removeRoleID $arenaRole}}
 		{{else if eq $cmd "reset"}}
 			{{if hasRoleID $mod}}
 				{{dbDel .Channel.ID "alist"}}
