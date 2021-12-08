@@ -43,7 +43,7 @@
 						{{- takeRoleID . $arenaRole 180 -}}
 						{{- $list1 = printf "%s<@%d> " $list1 . -}}
 					{{end}}
-					{{$fembed := cembed "description" (printf "```\npg arena %s```" $list1) "footer" (sdict "text" "Note to host: Dont forget to remove your ID.")}}
+					{{$fembed := cembed "description" (printf "```\nRpg arena %s```" $list1) "footer" (sdict "text" "Note to host: Dont forget to remove your ID.")}}
 					{{sendMessage $arena $list1}}
 					{{addMessageReactions $arena (sendMessageRetID $arena $fembed) $cookie}}
 				{{end}}
