@@ -49,6 +49,8 @@ I don't think I need to explain this, but for the sake of README :)
 
 > `A list` : To check the list
 
+> `A hide` : To manually remove role/Hide arena channnel (By User).
+
 > `A reset` : To reset the list (**Mod only command**) 
 
 # 
