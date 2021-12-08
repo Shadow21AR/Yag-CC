@@ -33,10 +33,12 @@
 				{{if $smsg := dbGet .Channel.ID "smsg"}}{{deleteMessage nil $smsg.Value 1}}{{end}}
 				{{$msg = sendMessageRetID nil (cembed $embed)}}
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
+				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 				{{if eq (len $alist) 10}}
 					{{deleteMessage nil $msg 1}}
 					{{dbDel .Channel.ID "alist"}}
 					{{dbDel .Channel.ID "smsg"}}
+					{{cancelScheduledUniqueCC .CCID "alist"}}
 					{{$list1 := ""}}
 					{{range $alist}}
 						{{- giveRoleID . $arenaRole -}}
@@ -47,7 +49,6 @@
 					{{sendMessage $arena $list1}}
 					{{addMessageReactions $arena (sendMessageRetID $arena $fembed) $cookie}}
 				{{end}}
-				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "you are already in list") 2}}
 			{{end}}
@@ -85,6 +86,7 @@
 				{{dbDel .Channel.ID "alist"}}
 			 	{{if $smsg := dbGet .Channel.ID "smsg"}}{{deleteMessage nil $smsg.Value 1}}{{end}}
 				{{dbDel .Channel.ID "smsg"}}
+				{{cancelScheduledUniqueCC .CCID "alist"}}
 				{{deleteMessage nil (sendMessageRetID nil "Deleted the list!") 5}}
 			{{else}}
 				{{deleteMessage nil (sendMessageRetID nil "You don't have permissions to reset list!") 5}}
