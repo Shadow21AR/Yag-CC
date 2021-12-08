@@ -35,7 +35,6 @@
 				{{dbSet .Channel.ID "smsg" (str $msg)}}
 				{{if eq (len $alist) 10}}
 					{{deleteMessage nil $msg 1}}
-					{{sendMessage nil (complexMessage "content" (print "List sent to <#" $arena ">.") "embed" (cembed "title" "Boosted Arena" "timestamp" currentTime "thumbnail" (sdict "url" $icon) "description" $list))}}
 					{{dbDel .Channel.ID "alist"}}
 					{{dbDel .Channel.ID "smsg"}}
 					{{$list1 := ""}}
@@ -44,8 +43,9 @@
 						{{- takeRoleID . $arenaRole 180 -}}
 						{{- $list1 = printf "%s<@%d> " $list1 . -}}
 					{{end}}
+					{{$fembed := cembed "title" "RPG ARENA" "description" (printf "rpg arena %s" $list1) "footer" (sdict "text" "Note to host: Dont forget to remove your ID.)}}
 					{{sendMessage $arena $list1}}
-					{{addMessageReactions $arena (sendMessageRetID $arena (printf "```\nRpg arena %s```" $list1)) $cookie}}
+					{{addMessageReactions $arena (sendMessageRetID $arena $fembed) $cookie}}
 				{{end}}
 				{{scheduleUniqueCC .CCID nil (mult $expiryTime 60) "alist" (sdict "msg" (str $msg))}}
 			{{else}}
