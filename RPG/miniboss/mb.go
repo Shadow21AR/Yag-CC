@@ -1,7 +1,7 @@
-{{$join := 909670733406425118 }} {{/* <-- replace ##### with Miniboss join channel ID */}}
-{{$mb := 909838914225856573 }} {{/* <-- replace ##### with Minoboss channel ID */}}
-{{$mod := 875365958326292482  }} {{/* <-- replace &&&&& with mode role ID */}}
-{{$mbRole := 902269461543911494 }} {{/* <-- replace &&&&& with role ID that unlocks #miniboss channel */}}
+{{$join := ############### }} {{/* <-- replace ##### with Miniboss join channel ID */}}
+{{$mb := ############### }} {{/* <-- replace ##### with Minoboss channel ID */}}
+{{$mod := &&&&&&&&&&&&&&&&  }} {{/* <-- replace &&&&& with mode role ID */}}
+{{$mbRole := &&&&&&&&&&&&&&&& }} {{/* <-- replace &&&&& with role ID that unlocks #miniboss channel */}}
 
 {{$expiryTime := 10}} {{/* time in MINUTES to reset arena list after being inactive */}}
 {{$skull := "💀"}}
