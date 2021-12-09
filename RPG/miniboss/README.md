@@ -9,7 +9,7 @@
 Copy the [main.cc](https://github.com/Shadow21AR/Yag-CC/blob/1993e5335b441ee599d0e6c13bed6ed87fb01dca/RPG/miniboss/mb.go) to dashboard and configure the top part of the code.
 #
 
-## Configurable code:
+## Configurable code: 
 ### **Important configuration**
 ```go
 {{$join := ############### }} {{/* <-- replace ##### with Miniboss join channel ID */}}
