@@ -3,7 +3,7 @@
 {{$mod := &&&&&&&&&&&&&&&&  }} {{/* <-- replace &&&&& with mode role ID */}}
 {{$mbRole := &&&&&&&&&&&&&&&& }} {{/* <-- replace &&&&& with role ID that unlocks #miniboss channel */}}
 
-{{$expiryTime := 10}} {{/* time in MINUTES to reset arena list after being inactive */}}
+{{$expiryTime := 10}} {{/* time in MINUTES to reset mb list after being inactive */}}
 {{$skull := "💀"}}
 {{$crown := "👑"}}
 
