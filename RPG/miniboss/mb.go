@@ -37,6 +37,7 @@
 						{{range $k, $v := $list}}
 							{{- if eq $k $topUser -}}{{$emoji = $crown}}{{else}}{{$emoji = ""}}{{end}}
 							{{- $mblist = printf "%s`[%02d]` <@%d> | `L: %d` %s\n" $mblist $count $k $v $emoji -}}
+							{{$count = add $count 1}}
 						{{end}}
 						{{$embed.Set "title" (print $skull " __Miniboss List [" (len $list) "/10]__ " $skull)}}
 						{{$embed.Set "description" (print $mblist "\n" $helpM)}}
@@ -77,6 +78,7 @@
 			{{range $k, $v := $list}}
 				{{- if eq $k $topUser -}}{{$emoji = $crown}}{{else}}{{$emoji = ""}}{{end}}
 				{{- $mblist = printf "%s`[%02d]` <@%d> | `L: %d` %s\n" $mblist $count $k $v $emoji -}}
+				{{$count = add $count 1}}
 			{{end}}
 			{{$embed.Set "title" (print $skull " __Miniboss List [" (len $list) "/10]__ " $skull)}}
 			{{$embed.Set "description" (print $mblist "\n" $helpM)}}
@@ -92,6 +94,7 @@
 			{{range $k, $v := $list}}
 				{{- if eq $k $topUser -}}{{$emoji = $crown}}{{else}}{{$emoji = ""}}{{end}}
 				{{- $mblist = printf "%s`[%02d]` <@%d> | `L: %d` %s\n" $mblist $count $k $v $emoji -}}
+				{{$count = add $count 1}}
 			{{end}}
 			{{$embed.Set "title" (print $skull " __Miniboss List [" (len $list) "/10]__ " $skull)}}
 			{{$embed.Set "description" (print $mblist "\n" $helpM)}}
@@ -115,3 +118,4 @@
 	{{dbDel .Channel.ID "mblist"}}
 	{{deleteMessage nil (sendMessageRetID nil (print "Arena got reset due to inactivity!\nNo player joined the list for last " $expiryTime " minutes.")) 30}}
 {{end}}
+{{/*------------------End of code -----------------*/}}
