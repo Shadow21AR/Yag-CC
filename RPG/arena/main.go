@@ -98,6 +98,6 @@
 	{{deleteMessage nil .ExecData.msg 1}}
 	{{dbDel .Channel.ID "alist"}}
 	{{dbDel .Channel.ID "smsg"}}
-	{{deleteMessage nil (sendMessage nil (print "Arena got reset due to inactivity!\nNo player joined the list for past " $expiryTime " minutes.")) 30}}
+	{{deleteMessage nil (sendMessageRetID nil (print "Arena got reset due to inactivity!\nNo player joined the list for past " $expiryTime " minutes.")) 30}}
 {{end}}
 {{/* --------------- End of code --------------- */}}
