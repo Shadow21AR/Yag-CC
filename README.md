@@ -5,5 +5,4 @@
 #
 ## RPG bot helper CC
   - [Arena Helper](https://github.com/Shadow21AR/Yag-CC/tree/main/RPG/arena)
-  - [Miniboss Helper](https://github.com/Shadow21AR/Yag-CC/tree/main/RPG/miniboss) *WIP*
-#
+  - [Miniboss Helper](https://github.com/Shadow21AR/Yag-CC/tree/main/RPG/miniboss)
