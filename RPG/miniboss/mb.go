@@ -13,7 +13,7 @@
      Repository: https://github.com/Shadow21AR/Yag-CC
 */}}
 {{if not .ExecData}}
-{{deleteTrigger 1}}{{deleteResponce 1}}
+{{deleteTrigger 1}}{{deleteResponse 1}}
 	{{$mblist := ""}}{{$count := 1}}{{$topUser := or (toInt (dbGet .Channel.ID "mblist").Value.mbhost) 0}}{{$emoji := ""}}{{$msg := ""}}
 	{{$list := or (dbGet .Channel.ID "mblist").Value.mblist dict}}
 	{{$ex := or (and (reFind "a_" .Guild.Icon) "gif" ) "png" }}
