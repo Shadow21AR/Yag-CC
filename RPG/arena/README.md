@@ -9,7 +9,7 @@
 Copy the [main.cc](https://github.com/Shadow21AR/Yag-CC/blob/main/RPG/arena/main.go) to dashboard and configure the top part of the code.
 #
 
-## Configurable code:
+## Configurable code: 
 ### **Important configuration**
 ```go
 {{$join := ##### }} {{/* <-- replace ##### with Arena join channel ID */}}
