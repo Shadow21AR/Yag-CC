@@ -42,7 +42,7 @@ I don't think I need to explain this, but for the sake of README :)
 #
 ## Available command:
 
-> `mb join L#` : To join the list
+> `mb join #` : To join the list
 
 > `mb leave` : To leave the list
 
