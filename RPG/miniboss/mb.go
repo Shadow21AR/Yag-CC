@@ -19,8 +19,8 @@
 {{$helpM := "```\n• mb join #   : To join the list\n• mb leave    : To leave the list\n• mb list     : To view the list```"}}
 {{$embed := sdict "author" (sdict "name" (print .Guild.Name) "icon_url" $icon) "timestamp" currentTime }}
 {{if not .ExecData}}
-{{deleteTrigger 1}}{{deleteResponse 1}}
 	{{if and .CmdArgs (eq $join .Channel.ID)}}
+		{{deleteTrigger 1}}{{deleteResponse 1}}
 		{{$cmd := index .CmdArgs 0 | lower}}
 		{{if eq $cmd "join"}}
 			{{if ge (len .CmdArgs) 2}}
