@@ -125,7 +125,7 @@
 {{else}}
 	{{deleteMessage nil .ExecData.msg 1}}
 	{{dbDel .Channel.ID "mblist"}}
-	{{$embed.Set "title" (print $skull " __Miniboss List [" (len $list) "/10]__ " $skull)}}
+	{{$embed.Set "title" (print $skull " __Miniboss List [0/10]__ " $skull)}}
 	{{$embed.Set "description" (print $helpM)}}
 	{{$msg = sendMessageRetID nil (cembed $embed)}}
 	{{dbSet .Channel.ID "mblist" (sdict "mmsg" (str $msg))}}
