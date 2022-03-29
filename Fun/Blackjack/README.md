@@ -1,4 +1,4 @@
-# Yag-CC | Blackjack
+# Yag-CC | Blackjack BROKEN RIGHT NOW DONT USE IT ILL FIX IT WHEN I STOP PROCRASTURBATING.
 
 Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Yag-CC/blob/38ffe96b33a21783209a042c9e6cf96e480f0f7f/Fun/Blackjack/main-bj.go), [`reaction-bj.go`](https://github.com/Shadow21AR/Yag-CC/blob/38ffe96b33a21783209a042c9e6cf96e480f0f7f/Fun/Blackjack/reaction-bj.go), [`other-bj.go`](https://github.com/Shadow21AR/Yag-CC/blob/38ffe96b33a21783209a042c9e6cf96e480f0f7f/Fun/Blackjack/other-bj.go)) to your server.
 
