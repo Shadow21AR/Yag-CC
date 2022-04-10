@@ -155,7 +155,7 @@ Repository: https://github.com/Shadow21AR/Yag-CC*/}}
   {{$embed := index (getMessage nil $msg).Embeds 0 | structToSdict}}
   {{$embed.Set "title" "BlackJack (inactive)"}}
   {{$embed.Set "description" (print $embed.Description "\n You lost `" $amt "`credits")}}
-{{$_ := dbIncr .User.ID "CREDIT" (mult -1 $amt)}}
+  {{$_ := dbIncr .User.ID "CREDIT" (mult -1 $amt)}}
   {{editMessage nil $msg (cembed $embed )}}
   {{deleteAllMessageReactions nil $msg}}
   {{dbDel .User.ID "bj"}}
