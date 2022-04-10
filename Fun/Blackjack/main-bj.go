@@ -117,7 +117,7 @@
             {{ end }}
             {{ sendMessage nil (print $user.Mention "'s balance is : " (or (toInt (dbGet $user.ID "CREDIT").Value) 0))}}
         {{else if reFind `(?i)add(?:balance)?` $cmd}}
-            {{ $args := parseArgs 2 (print "__To add balance__: `" $prefix "setb @user <amount>`") (carg "member" "user") (carg "int" "amount" 0 100000000) }}
+            {{ $args := parseArgs 2 (print "__To add balance__: `" $prefix "add @user <amount>`") (carg "member" "user") (carg "int" "amount" 0 100000000) }}
             {{ $user := .User }} {{ $value := 0 }}
             {{ if $args.IsSet 0 }}
                 {{ $user = ($args.Get 0).User }}
