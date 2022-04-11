@@ -2,6 +2,8 @@
 
 Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Yag-CC/blob/main/Fun/Blackjack/main-bj.go), [`reaction-bj.go`](https://github.com/Shadow21AR/Yag-CC/blob/main/Fun/Blackjack/reaction-bj.go)) to your server.
 
+> Disable Error Output on reaction CC
+
 # Commands 
 - `-bj` or `-blackjack` : to to play the game without any bets.
 - `-bj \<amount\>` or `-blackjack \<amount\>` : to play blackjack with bet.  <details>
