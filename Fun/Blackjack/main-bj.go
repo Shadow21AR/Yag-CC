@@ -116,12 +116,12 @@ Delete this if u need char space */}}
             {{dbSetExpire .User.ID "bj" (sdict "amount" $amount "deck" $deck "p_cards" $p_cards "d_cards" $d_cards "p_total" $p_total "d_total" $d_total "score" $score "p_t" $p_t "p_b" $p_b "d_t" $d_t "d_b" $d_b "d_ht" $d_ht "d_hb" $d_hb "emojis" $emojis "msg_id" (str $msg ) "channel_id" (str .Channel.ID ) ) 180}}
             {{scheduleUniqueCC .CCID nil 175 (print .User.ID "bj") (sdict "msg" (str $msg) "amt" $amount)}}
         {{end}}
-    {{else if reFind `(?i)bal(?:ance)?` $cmd}}
+    {{else if reFind `(?i)bal(?:ance)?` $cmd}} {{/* this is the code to handle a player checking their or another player's credits balance */}}
         {{$args := parseArgs 0 (print "__To check balance__ : `" $prefix "bal [@user]Optional`") (carg "member" "user")}}
         {{$user := .User}}
         {{if $args.IsSet 0}}{{$user = ($args.Get 0).User}}{{end}}
         {{sendMessage nil (print $user.Mention "'s balance is : " (or (toInt (dbGet $user.ID "CREDITS").Value) 0))}}
-    {{else if reFind `(?i)add(?:balance)?` $cmd}}
+    {{else if reFind `(?i)add(?:balance)?` $cmd}} {{/* this is the code to handle an admin giving a player credits */}}
         {{$args := parseArgs 2 (print "__To add balance__: `" $prefix "add @user <amount>`") (carg "member" "user") (carg "int" "amount" 0 100000000)}}
         {{$user := .User}} {{$value := 0}}
         {{if $args.IsSet 0}}{{$user = ($args.Get 0).User}}{{end}}
@@ -129,19 +129,19 @@ Delete this if u need char space */}}
         {{$perms := "Administrator"}}
         {{if (in (split (index (split (exec "viewperms") "\n") 2) ", ") $perms)}}
             {{$_ := dbIncr $user.ID "CREDITS" $value}}
-            {{sendMessage nil (print "Success!\nUpdated " $user.Mention " balance to " $value "." )}}
+            {{sendMessage nil (print "Success!\nAdded " $value " to " $user.Username "'s balance." )}}
         {{else}}
-            {{sendMessage nil (print "You can't use this command\nYou need atleast one of these perms: " $perms)}}
+            {{sendMessage nil (print "You can't use this command\nYou need at least one of these perms: " $perms)}}
         {{end}}
-    {{else if reFind `(?i)give(?:balance)?` $cmd}}
+    {{else if reFind `(?i)give(?:balance)?` $cmd}} {{/* this is the code to handle a user giving another user some credits. */}}
         {{$args := parseArgs 2 (print "__To give__ : `" $prefix "give @user [Amount]`") (carg "member" "user") (carg "int" "amount to give" 0 100000000)}}
         {{$bal := (or (dbGet .User.ID "CREDITS").Value 0) | toInt}} {{$amount := $args.Get 1}}
         {{if ge $bal $amount}}
             {{$_ := dbIncr .User.ID "CREDITS" (mult -1 $amount)}}
             {{$_ := dbIncr ($args.Get 0).User.ID "CREDITS" $amount}}
-            {{sendMessage nil (printf "%s gave `%d` credits to %s" .User.Mention $amount ($args.Get 0).User.Mention)}}
+            {{sendMessage nil (printf "%s gave `%d` credits to %s" .User.Username $amount ($args.Get 0).User.Username)}}
         {{else}}
-            {{sendMessage nil "You can't give that much :c"}}
+            {{sendMessage nil "You can't give that much :c. Insufficient funds."}}
         {{end}}
     {{end}}
 {{else}}
