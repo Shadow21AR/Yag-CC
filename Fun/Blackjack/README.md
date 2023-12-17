@@ -24,4 +24,4 @@ Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Y
 - `-give @user \<amount\>` : to ADD the balance. 
 
 
-> If u got any ideas / bugs to share , contact me on discord : Shadow21A🌟#3030 or u can find me on yagpdb support server.
+> If u got any ideas / bugs to share , contact me on discord : `@shadow21a` or u can find me on yagpdb support server.
