@@ -32,23 +32,23 @@
             {{cancelScheduledUniqueCC .CCID (print .User.ID "bj")}}
         {{end}}
     {{else if eq .Reaction.Emoji.ID 874954815736807454}}{{/*STAY*/}}
-        {{range seq 0 13}} {{/* I dunno why I did this lol*/}}
-            {{- if lt $d_total 17 -}}
-                {{$card = index $deck 0}}
+        {{range seq 0 13}} {{/* I dunno how many potential cards dealer can draw, so just using 13*/}}
+            {{- if le $d_total 17 -}}{{/* Dealer must stop drawing if its card exceeds 17 or more*/}}
+                {{- $card = index $deck 0}}
                 {{- $d_cards = $d_cards.Append $card -}}
                 {{- $deck = slice $deck 1 -}}
                 {{- $temp := index ( split $card " " ) 1 -}}
                 {{- if and (eq $temp "ace") ( le $d_total 11 ) -}}{{- $d_score = 11 -}}{{- else -}}{{- $d_score = toInt ( $score.Get $temp ) -}}{{- end -}}
                 {{- $d_total = add $d_total $d_score -}}
+                {{- if reFind `spade|club` (index (split $card " ") 0)}}
+                  {{- $d_t = $d_t.Append ($emojis.Get (joinStr "" "b" (index (split $card " ") 1)))}}
+                  {{- $d_b = $d_b.Append ($emojis.Get (index (split $card " ") 0))}}
+                {{- else if reFind `heart|diamond` (index (split $card " ") 0)}}
+                  {{- $d_t = $d_t.Append ($emojis.Get (joinStr "" "r" (index (split $card " ") 1)))}}
+                  {{- $d_b = $d_b.Append ($emojis.Get (index (split $card " ") 0))}}
+                {{- end}}
             {{- end -}}
         {{- end -}}
-        {{if reFind `spade|club` (index (split $card " ") 0)}}
-            {{$d_t = $d_t.Append ($emojis.Get (joinStr "" "b" (index (split $card " ") 1)))}}
-            {{$d_b = $d_b.Append ($emojis.Get (index (split $card " ") 0))}}
-        {{else if reFind `heart|diamond` (index (split $card " ") 0)}}
-            {{$d_t = $d_t.Append ($emojis.Get (joinStr "" "r" (index (split $card " ") 1)))}}
-            {{$d_b = $d_b.Append ($emojis.Get (index (split $card " ") 0))}}
-        {{end}}
         {{deleteMessageReaction nil .Message.ID .User.ID "stay:874954815736807454"}}
         {{if gt $d_total 21}}
             {{$embed.Set "color" 0x00FF00}}
