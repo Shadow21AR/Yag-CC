@@ -4,7 +4,7 @@ Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Y
 
 > Disable Error Output on reaction CC
 
-Recommend main CC trigger : regex : 
+Recommended main CC trigger : regex : 
 ```
 \A(?:\-|<@!?204255221017214977>)\s*((?:b(?:lack)?j(?:ack)?)|(?:bal(?:ance)?)|(?:give(?:balance)?)|(?:add(?:balance)?))(?: +|\z)
 ```
