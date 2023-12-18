@@ -33,7 +33,7 @@
         {{end}}
     {{else if eq .Reaction.Emoji.ID 874954815736807454}}{{/*STAY*/}}
         {{range seq 0 13}} {{/* I dunno how many potential cards dealer can draw, so just using 13*/}}
-            {{- if le $d_total 17 -}}{{/* Dealer must stop drawing if its card exceeds 17 or more*/}}
+            {{- if le $d_total 17 -}}{{/* Dealer must stop drawing if it's score exceeds 17 */}}
                 {{- $card = index $deck 0}}
                 {{- $d_cards = $d_cards.Append $card -}}
                 {{- $deck = slice $deck 1 -}}
