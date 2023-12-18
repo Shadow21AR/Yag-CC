@@ -1,8 +1,3 @@
-{{/* Recommend trigger : regex : `\A(?:\-|<@!?204255221017214977>)\s*((?:b(?:lack)?j(?:ack)?)|(?:bal(?:ance)?)|(?:give(?:balance)?)|(?:add(?:balance)?))(?: +|\z)`
-Copyright (c): Shadow21A
-Repository: https://github.com/Shadow21AR/Yag-CC
-Delete this if u need char space */}}
-
 {{$hitEmoji := "hit:874954948801073163"}}
 {{$stayEmoji := "stay:874954815736807454"}}
 {{$prefix := "-"}}
@@ -141,11 +136,10 @@ Delete this if u need char space */}}
             {{$_ := dbIncr ($args.Get 0).User.ID "CREDITS" $amount}}
             {{sendMessage nil (printf "%s gave `%d` credits to %s" .User.Username $amount ($args.Get 0).User.Username)}}
         {{else}}
-            {{sendMessage nil "You can't give that much :c. Insufficient funds."}}
+            {{sendMessage nil "Insufficient funds."}}
         {{end}}
     {{end}}
 {{else}}
-    {{/*Deleting inactive shits*/}}
     {{if (dbGet .User.ID "bj")}}
         {{$msg := toInt .ExecData.msg}}
         {{$amt := toInt .ExecData.amt}}
