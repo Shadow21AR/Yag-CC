@@ -1,12 +1,12 @@
 # Yag-CC | Blackjack 
 
 ## Setting up Blackjack Custom command
-**Step 1**: Add [Main CC](Fun/Blackjack/main-bj.go), Trigger type: `regex`, Trigger: 
+**Step 1**: Add [Main CC](https://github.com/Shadow21AR/Yag-CC/blob/main/Fun/Blackjack/main-bj.go), Trigger type: `regex`, Trigger: 
 ```
 \A(?:\-|<@!?204255221017214977>)\s*((?:b(?:lack)?j(?:ack)?)|(?:bal(?:ance)?)|(?:give(?:balance)?)|(?:add(?:balance)?))(?: +|\z)
 ```
 
-**Step 2**: Add [Reaction Handler CC](Fun/Blackjack/reaction-bj.go), Trigger type: `reactions`, select `added reactions only`
+**Step 2**: Add [Reaction Handler CC](https://github.com/Shadow21AR/Yag-CC/blob/main/Fun/Blackjack/reaction-bj.go), Trigger type: `reactions`, select `added reactions only`
 
 >❗ Disable Error output on reaction CC. <br>
 > ⚠️ Card Emojis are in my private server, if u are using selfhost, u have to change the emoji name:ID or ask me to invite your selfhost to emoji server. 
