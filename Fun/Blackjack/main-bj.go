@@ -95,7 +95,7 @@
         {{if eq $p_total 21}}
             {{$title = "You Got BLACKJACK!!"}}
             {{$color = 0x00FF00}}
-            {{$content = (printf "%s's Hand:\n%s\n%s\nTotal: %d\n\nDealer's Hand:\n%s\n%s\nTotal: ??\n You won **5X `%d` credits.**" .User.String (joinStr " " $p_t.StringSlice) (joinStr " " $p_b.StringSlice) $p_total (joinStr " " $d_t.StringSlice) (joinStr " " $d_b.StringSlice) $amount )}}
+            {{$content = (printf "%s's Hand:\n%s\n%s\nTotal: %d\n\nDealer's Hand:\n%s\n%s\nTotal: %d\n You won **5 x `%d` credits.**" .User.String (joinStr " " $p_t.StringSlice) (joinStr " " $p_b.StringSlice) $p_total (joinStr " " $d_t.StringSlice) (joinStr " " $d_b.StringSlice) $d_total $amount )}}
             {{$nice := dbIncr .User.ID "CREDITS" (mult 5 $amount)}}
         {{end}}
         {{$embed := cembed 
