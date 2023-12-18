@@ -4,6 +4,11 @@ Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Y
 
 > Disable Error Output on reaction CC
 
+Recommend main CC trigger : regex : 
+```
+\A(?:\-|<@!?204255221017214977>)\s*((?:b(?:lack)?j(?:ack)?)|(?:bal(?:ance)?)|(?:give(?:balance)?)|(?:add(?:balance)?))(?: +|\z)
+```
+
 # Commands 
 - `-bj` or `-blackjack` : to to play the game without any bets.
 - `-bj \<amount\>` or `-blackjack \<amount\>` : to play blackjack with bet.  <details>
@@ -23,5 +28,8 @@ Add all of these Custom Commands ([`main-bj.go`](https://github.com/Shadow21AR/Y
 - `-add @user \<amount\>` : to ADD the balance. Admin ONLY\
 - `-give @user \<amount\>` : to ADD the balance. 
 
+
+Copyright (c): @Shadow21A
+Repository: https://github.com/Shadow21AR/Yag-CC
 
 > If u got any ideas / bugs to share , contact me on discord : `@shadow21a` or u can find me on yagpdb support server.
