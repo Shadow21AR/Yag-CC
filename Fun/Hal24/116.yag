@@ -1,0 +1,144 @@
+command: add5
+{{$realms := sdict 
+  "realm_1" (sdict 
+             "name" "The Shifting Sands of Time" 
+             "img" "https://i.vgy.me/BWAFiv.png"
+             "desc" "Venture into the endless dunes, where time itself bends and secrets of a long-forgotten civilization are buried beneath the sands. Beware the creatures that lurk in the shadows, ready to strike at any moment. Only the bravest explorers can gather the lost fragments of power hidden deep within the shifting desert." 
+             "chal" (cslice (sdict "type" "explore" "scenario" 6 "desc" "Explore the mystical dunes to find a rare blessing or curse left behind by ancient cultivators (from `;explore`). Beware, for the sands are alive with secrets" "rewards" (sdict "type" "perk" "reward" (cslice "Blessing of the Celestial Dune" "Curse of the Lost Sands"))) (sdict "type" "kill" "kind" "mobs" "count" 5 "name" "Sand Wraith" "desc" "Engage with desert spirits that guard lost treasures." "rewards" (sdict "type" "item" "reward" "sun glyph")) (sdict "type" "discover" "name" "oasis" "desc" "Decode cryptic clues to locate hidden water sources" "rewards" (sdict "type" "item" "reward" "sunstone"))))
+  "realm_2" (sdict
+            "name" "The Whispering Woods of Echoing Shadows"
+            "img" "https://i.vgy.me/o70cQH.png"
+            "desc" "A towering ancient tree with roots that reach into forgotten realms. Its bark holds the key to untold power, but harvesting it may awaken guardians from a time before time. Proceed with caution, or risk becoming part of the legend yourself."
+            "chal" (cslice (sdict "type" "explore" "scenario" 7 "desc" "Seek the legendary Mystic Tree (from `;explore`)." "rewards" (sdict "type" "perk" "reward" (cslice "Ethereal Blessing of the Spirit" "Curse of the Withering Roots"))) (sdict "type" "kill" "kind" "mobs" "count" 5 "name" "Woodland Wraith" "desc" "Fend off aggressive creatures that haunt the woods" "rewards" (sdict "type" "item" "reward" "nature glyph")) (sdict "type" "discover" "name" "woods" "desc" "Discover a hidden path illuminated by ghostly lanterns" "rewards" (sdict "type" "item" "reward" "nature seed"))))
+  "realm_3" (sdict
+            "name" "The Cursed Citadel of Shadows"
+            "img" "https://i.vgy.me/vZgPFJ.png"
+            "desc" "A fortress forgotten by time, where echoes of the past still haunt its halls. Traps and trials await those who dare to enter, but untold treasures are said to be hidden within its cursed walls. Will you be the one to uncover its secrets?"
+            "chal" (cslice (sdict "type" "haunt" "count" 15 "desc" "Lead your fellow cultivators through the eerie corridors of the haunted realm, skillfully evading spectral onslaughts to conquer the ghostly trials!" "rewards" (sdict "type" "perk" "reward" (cslice "Spectral Curse" "Phantom's Favor"))) (sdict "type" "kill" "kind" "miniboss" "name" "Shadow Wraith" "count" 10 "desc" "Confront Shadow wraiths that guard the secrets of the citadel" "rewards" (sdict "type" "item" "reward" "shadow glyph")) (sdict "type" "discover" "name" "castle" "desc" "Unlock the secret room." "rewards" (sdict "type" "item" "reward" "shadow essence"))))
+  "realm_4" (sdict
+            "name" "The Frozen Abyss of Eternal Winter"
+            "img" "https://i.vgy.me/7NscWC.png"
+            "desc" "Where time stands still and the icy winds freeze even the bravest souls. Deep beneath the permafrost, ancient secrets lie in wait, guarded by the fearsome Glacial Wraiths. Dare to walk the abyss? Only those with hearts of ice can survive."
+            "chal" (cslice (sdict "type" "explore" "scenario" 8 "desc" "Brave the treacherous frozen lake, using cultivation skills to maintain balance (from `;explore`)" "rewards" (sdict "type" "perk" "reward" (cslice "Empowered by Shadows" "Cursed Pursuit"))) (sdict "type" "kill" "kind" "miniboss" "count" 10 "name" "Glacial Wraith" "desc" "Battle against icy spirits guarding the realm" "rewards" (sdict "type" "item" "reward" "frost glyph")) (sdict "type" "discover" "name" "abyss" "desc" "Locate a legendary fire source rumored to grant invulnerability against the cold" "rewards" (sdict "type" "item" "reward" "ice crystal"))))
+  "realm_5" (sdict
+            "name" "The Twisted Marsh of Lost Souls"
+            "img" "https://i.vgy.me/0woT5s.png"
+            "desc" "The swamp whispers, but it’s not the wind... It's the voices of those who have ventured too deep. Navigate the murky paths, but beware of the cursed spirits that call the marsh home. Each step forward may lead you closer to the final boss, but at what cost?"
+            "chal" (cslice (sdict "type" "event" "name" "quicksand" "count" 5 "desc" "The marsh is riddled with hidden patches of quicksand. One wrong step could pull you under and trap you in its muddy grasp forever, Survive 5 times!" "rewards" (sdict "type" "perk" "reward" (cslice "Spirit's Favor" "Weakened Essence"))) (sdict "type" "kill" "kind" "miniboss" "count" 10 "name" "The Gloomwader" "desc" "Engage in fierce battles with monstrous swamp spirit" "rewards" (sdict "type" "item" "reward" "glyph of lament")) (sdict "type" "discover" "name" "marsh" "desc" "Locate a hidden temple within the marsh, rumored to hold ancient secrets" "rewards" (sdict "type" "item" "reward" "cursed fragment"))))}}
+
+{{$explore := sdict
+"scenario1" (sdict "id" 1 "desc" "🎃 The Fog of Forgotten Souls rolls in, %s 🎃 You encounter two figures emerging from the mist. Which will you follow?"
+"options" (cslice
+    (sdict "choice" "🔮 Follow the Ghostly Sage" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The Ghostly Sage shares forgotten secrets. Gain +3000 spooky points and a Rare Item!" "spooky" 3000 "item" "treat_card" "descNoItem" "The sage's wisdom enriches your knowledge.")
+            (sdict "result" "negative" "desc" "The sage's wisdom comes with a curse. Lost -1000 spooky points!" "spooky" -1000)))
+    (sdict "choice" "🕯 Brave the Fog Alone" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You discover a hidden treasure chest. Gain +2000 spooky points and a Rare Item!" "spooky" 2000 "item" "xp_boost3" "descNoItem" "The chest reveals long-lost secrets.")
+            (sdict "result" "negative" "desc" "The fog confuses you, draining your energy. Lost -1500 spooky points." "spooky" -1500)))))
+
+"scenario2" (sdict "id" 2 "desc" "🌕 Under the eerie glow of the full moon, %s 🌕 You spot two enchanted pathways ahead. Which will you choose?"
+"options" (cslice
+    (sdict "choice" "🌲 Explore the Enchanted Grove" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You find magical herbs that boost your powers. Gain +2500 spooky points and a Rare Item!" "spooky" 2500 "item" "xp_boost2" "descNoItem" "The herbs enhance your abilities.")
+            (sdict "result" "negative" "desc" "Beware of the enchanted plants! Lost -2000 spooky points!" "spooky" -2000)))
+    (sdict "choice" "🌊 Cross the Mystical River" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The river grants you a blessing of speed. Gain +3000 spooky points and a Rare Item!" "spooky" 3000 "item" "mboss_bait" "descNoItem" "The blessing quickens your steps.")
+            (sdict "result" "negative" "desc" "The river’s currents pull you under. Lost -1500 spooky points!" "spooky" -1500)))))
+
+"scenario3" (sdict "id" 3 "desc" "🕷️ In the haunted forest, %s 🕷️ Two paths lie before you, each promising adventure. Which will you take?"
+"options" (cslice
+    (sdict "choice" "🦇 Investigate the Creepy Cabin" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "Inside, you uncover ancient relics. Gain +4000 spooky points and a Rare Item!" "spooky" 4000 "item" "treat_card" "descNoItem" "The relics whisper stories of the past.")
+            (sdict "result" "negative" "desc" "The cabin is a trap! Lost -2000 spooky points!" "spooky" -2000)))
+    (sdict "choice" "🌌 Follow the Whispering Shadows" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The shadows lead you to hidden treasures. Gain +3500 spooky points and a Rare Item!" "spooky" 3500 "item" "xp_boost1" "descNoItem" "The treasures reveal ancient wisdom.")
+            (sdict "result" "negative" "desc" "The shadows mislead you into a spider's lair. Lost -3000 spooky points!" "spooky" -3000)))))
+"scenario4" (sdict "id" 4 "desc" "⚰️ As you wander through the graveyard, %s ⚰️ Two tombstones catch your eye. Which will you investigate?"
+"options" (cslice
+    (sdict "choice" "🪦 Open the Tomb of Secrets" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The tomb reveals ancient scrolls. Gain +5000 spooky points and a Rare Item!" "spooky" 5000 "item" "xp_points" "descNoItem" "The scrolls contain powerful knowledge.")
+            (sdict "result" "negative" "desc" "A ghost emerges, cursing you! Lost -4000 spooky points!" "spooky" -4000)))
+    (sdict "choice" "🪴 Inspect the Weeping Willow" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The tree grants you a vision of hidden paths. Gain +2500 spooky points and a Rare Item!" "spooky" 2500 "item" "mboss_bait" "descNoItem" "The vision opens new opportunities.")
+            (sdict "result" "negative" "desc" "The tree's tears ensnare you. Lost -2000 spooky points!" "spooky" -2000)))))
+
+"scenario5" (sdict "id" 5 "desc" "💀 Amidst the ruins of an ancient castle, %s 💀 Two doors stand before you. Which will you choose?"
+"options" (cslice
+    (sdict "choice" "🏰 Enter the Grand Hall" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You find a treasure trove! Gain +6000 spooky points and a Rare Item!" "spooky" 6000 "item" "xp_boost2" "descNoItem" "The trove is filled with riches beyond imagination.")
+            (sdict "result" "negative" "desc" "The hall is cursed! Lost -5000 spooky points!" "spooky" -5000)))
+    (sdict "choice" "🛡️ Explore the Armory" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You discover powerful weapons. Gain +4000 spooky points and a Rare Item!" "spooky" 4000 "item" "treat_card" "descNoItem" "The weapons empower your journey.")
+            (sdict "result" "negative" "desc" "A trap triggers! Lost -3000 spooky points!" "spooky" -3000)))))
+
+"scenario6" (sdict "id" 6 "desc" "🏜️ %s stand at the edge of the mystical dunes, feeling the ancient energy swirling around. As you embark on your journey, the sands whisper secrets of a hidden blessing or curse. What path will you choose? 🏜️"
+"options" (cslice
+    (sdict "choice" "🧭 Explore the Dunes" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You unearth the Serene Spring. Gain +10,000 spooky points! and a rare item." "spooky" 10000 "item" "xp_points" "descNoItem" "You feel a rush of wind, granting you 10,000 spooky points.")
+            (sdict "result" "negative" "desc" "The sands shift beneath you, leading you into a hidden trap! You find yourself ensnared in a web of quicksand. Lose -5000 spooky points!" "spooky" -5000)))
+    (sdict "choice" "🌬️ Follow the Whispers" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "Heeding the whispers of the desert winds, you uncover the secret location of the Serene Spring, enhancing your journey. Gain 8000 spooky points and rare item." "spooky" 8000 "item" "xp_boost3" "descNoItem" "You are enveloped in a soft breeze, invigorating your spirit.")
+            (sdict "result" "negative" "desc" "The whispers lead you astray, and you stumble into a cursed spot of the sands, facing the Wrath of the Shifting Sands. Lose -5000 spooky points!" "spooky" -5000)))))
+
+"scenario7" (sdict "id" 7 "desc" "🌳 %s stand before the legendary Mystic Tree, its bark shimmering with ethereal energy. Can you gather its bark and harness its power?"
+"options" (cslice
+    (sdict "choice" "🌿 Carefully Harvest the Bark" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You successfully harvest the bark, feeling a surge of energy. Gain +8000 spooky points and rare item!" "spooky" 8000 "item" "xp_points" "descNoItem" "The bark's essence enhances your spirit.")
+            (sdict "result" "negative" "desc" "The tree resists your attempts! You lose balance and fall. Lost -5000 spooky points!" "spooky" -5000)))
+    (sdict "choice" "🍃 Examine the Surroundings" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You discover hidden herbs nearby that amplify the tree's power. Gain +3500 spooky points and rare item!" "spooky" 3500 "item" "xp_boost3" "descNoItem" "The herbs enhance your abilities.")
+            (sdict "result" "negative" "desc" "You disturb a sleeping creature! It attacks, causing you to lose -3000 spooky points!" "spooky" -3000)))))
+
+"scenario8" (sdict "id" 8 "desc" "❄️ %s stand at the edge of the Treacherous Frozen Lake, its surface glistening like shattered glass. Will you brave the icy depths to uncover its secrets?"
+"options" (cslice
+    (sdict "choice" "🌊 Carefully Cross the Ice" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You skillfully navigate the ice, discovering a hidden cave beneath the surface. Gain +6000 spooky points and rare item." "spooky" 6000 "item" "xp_points" "descNoItem" "The crystal radiates a chilling power.")
+            (sdict "result" "negative" "desc" "The ice shatters beneath your feet, plunging you into the frigid depths! The biting cold steals -4000 spooky points from you." "spooky" -4000)))
+    (sdict "choice" "🏔️ Inspect the Frozen Edge" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You discover a hidden stash of ancient relics at the frozen edge. Gain +5000 spooky points and rare item" "spooky" 5000 "item" "xp_boost3" "descNoItem" "As u inspected, you noticed the relic holds mysterious powers...")
+            (sdict "result" "negative" "desc" "You trigger a minor avalanche of ice! Lose -2500 spooky points!" "spooky" -2500)))))
+}}
+{{$marsh := sdict "marsh" (sdict
+	"step_1" (sdict "clue" "🌫 The air is thick with a heavy mist, swirling around you like lost souls seeking solace. Shadows flicker at the edges of your vision, hinting at the dangers ahead." "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Follow the distant whispers that beckon you forward." "response" "As you draw near, the whispers reveal hidden paths and long-forgotten secrets." "correct" true "next" "step_2" "label" "Follow the Whispers")
+	(sdict "option" 2 "desc" "Examine the murky waters for signs of life." "response" "The waters are deceptively still, hiding lurking dangers. You gain nothing." "correct" false "label" "Examine the Waters")
+	(sdict "option" 3 "desc" "Listen carefully to the sounds of the marsh." "response" "The sounds are haunting and disorienting, leaving you unsettled." "correct" false "label" "Listen to the Sounds")))
+	"step_2" (sdict "clue" "💀 The whispers grow louder, revealing ghostly figures trapped in the marsh, their faces twisted in sorrow." "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Approach the ghostly figures, seeking their wisdom." "response" "They share their knowledge of the marsh, guiding you toward safety. Move to step 3!" "correct" true "next" "step_3" "label" "Seek Wisdom from Spirits")
+	(sdict "option" 2 "desc" "Ignore the spirits and forge your own path." "response" "Your decision leaves you disoriented and wandering aimlessly. Proceed to step 4." "correct" false "label" "Ignore the Spirits")
+	(sdict "option" 3 "desc" "Attempt to free the spirits from their torment." "response" "Your actions only anger them, causing a wave of despair. Move to step 4." "correct" false "label" "Free the Spirits")))
+	"step_3" (sdict "clue" "👻 With the spirits' guidance, you now spot a hidden path leading deeper into the marsh, illuminated by a faint glow." "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Follow the glowing path, trusting in the spirits' guidance." "response" "The glow leads you to a sanctuary filled with lost relics! Move to step 4!" "correct" true "next" "step_4" "label" "Follow the Glow")
+	(sdict "option" 2 "desc" "Take a different route that seems safer." "response" "The path leads you into a trap, ensnaring you in the marsh's grasp." "correct" false "label" "Take the Safer Route")
+	(sdict "option" 3 "desc" "Stay and reflect on the spirits' wisdom." "response" "Your hesitation costs you dearly, leaving you vulnerable to the marsh's dangers." "correct" false "label" "Reflect")))
+	"step_4" (sdict "clue" "🏺 In the sanctuary, ancient relics pulse with energy, hinting at their potential" "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Examine the relics for their powers." "response" "You unlock the secret of the relics, gaining a Lost Soul Token!" "correct" true "next" "step_5" "label" "Examine the Relics")
+	(sdict "option" 2 "desc" "Attempt to wield one of the relics." "response" "The relics resist your touch, leaving you drained. Move to step 5." "correct" false "label" "Wield a Relic")
+	(sdict "option" 3 "desc" "Leave the relics undisturbed, respecting their ancient power." "response" "You gain a sense of peace but nothing tangible." "correct" false "label" "Respect the Relics")))
+	"step_5" (sdict "clue" "🕯 Armed with the Lost Soul Token, you sense a malevolent presence lurking nearby, ready for a final confrontation" "reward" "cursed fragment" "img" "https://i.vgy.me/3p5eFt.png" "choices" (cslice 
+	(sdict "option" 1 "desc" "Prepare for battle against the final boss lurking in the shadows." "response" "You steel yourself for the confrontation, the air thick with tension." "correct" true "label" "Prepare for Battle")
+	(sdict "option" 2 "desc" "Try to flee the marsh, fearing the unknown." "response" "Your fear only attracts the darkness, leaving you exposed!" "correct" false "label" "Flee the Marsh")
+	(sdict "option" 3 "desc" "Seek the spirits' help for the final battle." "response" "The spirits rally to your side, but you miss the chance to harness the token's full potential." "correct" false "label" "Seek Spirits' Aid")))
+)}}
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{$data.Set "realms" $realms}}
+{{$data.Set "explore" $explore}}
+{{if not  $data.delve}}{{$data.Set "delve" sdict}}{{end}}
+{{$data.delve.Set "marsh" $marsh}}
+{{dbSet 0 "hal" $data}}Added Data

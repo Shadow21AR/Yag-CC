@@ -1,0 +1,317 @@
+Trigger: Message Component: hal_
+{{$uData := (dbGet .User.ID "hal").Value}}
+{{if not $uData}}{{sendResponse nil (complexMessage "content" "🕷️ Oops! It Looks Like You’re Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world." "ephemeral" true)}}{{return}}{{end}}
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{if eq .StrippedID "hal_mobs"}}
+	{{$gain := randInt 2000}}
+	{{$embed := index .Message.Embeds 0 | structToSdict}}
+	{{$out := (printf "Congratulations! %s have triumphed over the enemy. The ethereal presence dissipates, and a sense of victory fills the air. `%s` spooky points have been added to the spectral ledger!" .User.Mention (humanizeThousands $gain))}}{{$embed.Set "title" "🎃 Defeated 🎃"}}
+	{{if in $uData.equip "Specter’s Mask"}}
+		{{if le (randInt 100) 10}}
+			{{$out = print $out "\n\nYou got extra 50% spooky points. (Sect bonus)"}}
+			{{$gain = mult 1.5 $gain | toInt}}
+		{{end}}
+	{{else if in $uData.equip "Pumpkin Helm"}}
+		{{if le (randInt 100) 10}}
+			{{$out = (print $out "\n\nYou got 2x spooky points. (Sect bonus)")}}
+			{{$gain = mult 2 $gain | toInt}}
+		{{end}}
+	{{end}}
+	{{if eq (or $uData.pet "") "Spectral Fox"}}
+		{{$out = (print $out "\n\nYou got extra 10% spooky points. (Spectral Fox pet bonus)")}}
+		{{$gain = mult 1.1 $gain | toInt}}
+	{{end}}
+	{{if eq (or $uData.pet "") "Mystic Bat"}}
+		{{$out = (print $out "\n\nYou got extra 30% spooky points. (Mystic Bat pet bonus)")}}
+		{{$gain = mult 1.3 $gain | toInt}}
+	{{end}}
+	{{if inFold $embed.Title "Woodland Wraith"}}
+		{{$award := or ($uData.Get "The Whispering Woods of Echoing Shadows") sdict}}
+		{{$award.Set "kill" (add 1 (or $award.kill 0))}}
+		{{$uData.Set "The Whispering Woods of Echoing Shadows" $award}}
+	{{end}}
+	{{if inFold $embed.Title "Sand Wraith"}}
+		{{$award := or ($uData.Get "The Shifting Sands of Time") sdict}}
+		{{$award.Set "kill" (add 1 (or $award.kill 0))}}
+		{{$uData.Set "The Shifting Sands of Time" $award}}
+	{{end}}
+	{{$embed.Set "Description" $out}}
+	{{$uData.Set "sPoints" (add $gain (or $uData.sPoints 0))}}
+	{{$uData.Set "mKills" (add 1 (or $uData.mKills 0))}}
+	{{dbDel .Channel.ID "halMobs"}}{{dbSet .User.ID "hal" $uData}}
+	{{updateMessage (cembed $embed)}}
+{{else if eq .StrippedID "hal_miniboss"}}
+	{{$embed := index .Message.Embeds 0 | structToSdict}}
+	{{$pList := or (dbGet .Channel.ID "pList").Value dict}}
+	{{if $pList.HasKey .User.ID}}{{sendResponse nil (complexMessage "content" "You’ve already taken your swing at the miniboss! Greed can be dangerous in the haunted realm..." "ephemeral" true)}}{{return}}{{end}}
+	{{$pList.Set .User.ID .User}}{{dbSet 997263718826123354 "pList" $pList}}{{$list := ""}}
+	{{range $k, $v := $pList}}
+		{{- $list = printf "%s- <@%d>\n" $list $k}}
+	{{end}}
+	{{$embed.Set "description" (printf "⏳ The veil between worlds grows thin! You have until **<t:%d:R>** to strike at the heart of the Miniboss. Gather your strength, brave cultivator, for each passing second brings you closer to victory—or defeat. Don't let this chance slip away into the shadows... 💀⚔️\n\nPlayer(s) participated:\n%s" ((snowflakeToTime .Message.ID).Add (toDuration "1m")).Unix (or $list "NA"))}}
+	{{updateMessageNoEscape (complexMessageEdit "content" "<@&1164215848714649622>" "embed" $embed "buttons" (cbutton "label" "⚔️ Attack" "custom_id" "hal_miniboss" "style" 0x4))}}
+{{else if reFind `^hal_claim_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your quest!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$rewards := cslice}}{{$out := ""}}{{$equip := or $uData.equip cslice}}
+	{{if eq $uData.sect "Phantom Lotus"}}
+		{{if ge $uData.exploredWR 10}}{{$rewards = $rewards.Append "Specter’s Mask"}}{{end}}
+		{{if ge $uData.mKills 100}}{{$rewards = $rewards.Append "Cloak of Shadows"}}{{end}}
+		{{if ge $uData.mbKills 50}}{{$rewards = $rewards.Append "Wraith Blade"}}{{end}}
+	{{else if eq $uData.sect "Infernal Pumpkin"}}
+		{{if ge $uData.tricked 10}}{{$rewards = $rewards.Append "Pumpkin Helm"}}{{end}}
+		{{if ge $uData.exploredWR 5}}{{$rewards = $rewards.Append "Flame-Scorched Armor"}}{{end}}
+		{{if ge $uData.mbKills 50}}{{$rewards = $rewards.Append "Cursed Flame Sword"}}{{end}}
+	{{end}}
+	{{range $rewards}}
+		{{- if not (in $uData.equip .)}}{{- $out = printf "%sYou received a %s.\n" $out .}}{{- $equip = $equip.Append .}}{{- end}}
+	{{end}}
+	{{if not $out}}{{sendResponse nil (complexMessage "content" "You may have already claimed your rewards or have yet to complete the quests." "ephemeral" true)}}{{return}}{{end}}
+	{{$uData.Set "equip" $equip}}
+	{{dbSet .User.ID "hal" $uData}}
+	{{sendResponse nil (complexMessage "content" $out "ephemeral" true)}}
+{{else if reFind `^hal_trick_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$tricks := (cslice "points" "mute" "points" "mirror" "points" "quest" "mute" "points")}}
+	{{$reward := index (shuffle $tricks) 0}}
+	{{$embed := structToSdict (index .Message.Embeds 0)}}
+	{{$name := (or .Member.Nick .User.Username)}}
+	{{if eq $reward "mute"}}
+		{{$points := randInt -1000 0}}
+		{{$time := randInt 1 11}}
+		{{try}}{{$_ := execAdmin "timeout" .User.ID (print $time "m") "🎃Got tricked🎃"}}{{catch}}{{$points = add $points (mult -1000 $time)}}{{print "...can't timeout you, so removed more spooky points."}}{{end}}
+		{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.negTrickMute) 0) "``\x60") $name $time (mult -1 $points))}}
+		{{$uData.Set "sPoints" (add $points (or $uData.sPoints 0))}}
+	{{else if eq $reward "points"}}
+		{{if eq (toInt (randInt 2)) 1}}
+			{{$points := (randInt 0 10000)}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.posTrick) 0) "``\x60") $name $points)}}
+			{{$uData.Set "sPoints" (add $points (or $uData.sPoints 0))}}
+		{{else}}
+			{{$points := (randInt -5000 0)}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.negTrick) 0) "``\x60") $name (mult -1 $points))}}
+			{{$uData.Set "sPoints" (add $points (or $uData.sPoints 0))}}
+		{{end}}
+	{{else if eq  $reward "mirror"}}
+		{{$rand := randInt 0 11}}
+		{{if eq $rand 0 1 2 3}}{{/* reverse */}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.trickInv) 0) "``\x60") $name)}}
+			{{$uData.Set "sPoints" (mult -1 (or $uData.sPoints 0))}}
+		{{else if eq $rand 4 5 6}}{{/* double */}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.trickDouble) 0) "``\x60") $name)}}
+			{{$uData.Set "sPoints" (mult 2 (or $uData.sPoints 0))}}
+		{{else if eq $rand 7 8}}{{/* half */}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.trickHalf) 0) "``\x60") $name)}}
+			{{$uData.Set "sPoints" (mult 0.5 (or $uData.sPoints 0) | toInt)}}
+		{{else if eq $rand 9}}{{/* reset */}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.trickReset) 0) "``\x60") $name)}}
+			{{$uData.Set "sPoints" 0}}
+		{{else if eq $rand 10}}
+			{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.trickNothing) 0) "``\x60") $name)}}
+		{{end}}
+	{{else if eq $reward "quest"}}{{$eout := ""}}
+		{{$target := 0}}
+		{{$rList := (or $data.uList (cslice 960119774526988348) | shuffle)}}
+		{{range $rList}}{{if ne $.User.ID .}}{{$target = .}}{{break}}{{end}}{{end}}
+		{{if not $target}}Something went wrong :/{{return}}{{end}}
+		{{$tMember := getMember $target}}{{if not $tMember}}Something went wrong :/ {{return}}{{end}}
+		{{$tData := (dbGet $tMember.User.ID "hal").Value}}{{if not $tData}}Something went wrong :/ {{return}}{{end}}
+		{{$points := randInt 0 (add 1 (abs $tData.sPoints))}}
+		{{$tData.Set "sPoints" (sub (abs (or $tData.sPoints 0)) $points | toInt)}}
+		{{$eout = (printf (print "``\x60\n" (index (shuffle $data.trickSteal) 0) "``\x60") $name $points (or $tMember.Nick $tMember.User.Username))}}
+		{{if inFold $uData.perks "Phantom's Favor"}}
+			{{$items := cslice}}
+			{{range $k, $v := $tData.items}}
+				{{- $items = $items.Append $k}}
+			{{end}}
+			{{$pick := index (shuffle $items) 0}}
+			{{$eout = (print $eout "You stole 1 `" $pick "` from " $tMember.User.Mention " (Phantom's Favor)")}}
+			{{$tData.items.Set $pick (sub ($tData.items.Get $pick) 1)}}
+			{{$uData.items.Set $pick (add (or ($uData.items.Get $pick) 0) 1)}}
+		{{end}}
+		{{$embed.Set "description" $eout}}
+		{{dbSet $tMember.User.ID "hal" $tData}}
+		{{$uData.Set "sPoints" (add $points (or $uData.sPoints 0))}}
+		{{$uData.Set "tricked" (add 1 (or $uData.tricked 0))}}
+	{{end}}
+	{{dbSet .User.ID "hal" $uData}}
+	{{updateMessage (cembed $embed)}}
+{{else if reFind `^hal_treat_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$points := randInt 500 2501}}
+	{{if not ($data.treat)}}{{sendResponse nil "Something went wrong :/"}}{{return}}{{end}}
+	{{$uData.Set "sPoints" (add $points (or $uData.sPoints 0))}}
+	{{$embed := structToSdict (index .Message.Embeds 0)}}
+	{{$name := (or .Member.Nick .User.Username)}}
+	{{$embed.Set "description" (printf (print "``\x60\n" (index (shuffle $data.treat) 0) "``\x60") $name $points)}}
+	{{$embed.Del "Footer"}}
+	{{updateMessage (cembed $embed)}}
+	{{dbSet .User.ID "hal" $uData}}
+{{else if reFind `^hal_explore_.*` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$scene := $data.explore.Get (index $dataButt 3)}}
+	{{$options := index $scene.options (index $dataButt 4 | toInt)}}
+	{{$outcome := index (shuffle $options.outcomes) 0}}
+	{{$out := ""}}{{$embed := structToSdict (index .Message.Embeds 0)}}
+	{{if eq $outcome.result "positive"}}
+		{{if le (randInt 1 101) 20}}
+			{{$out = printf "%s (%s)" $outcome.desc $outcome.item}}
+			{{if $uData.items.HasKey $outcome.item}}
+				{{$uData.items.Set $outcome.item (add ($uData.items.Get $outcome.item) 1)}}
+				{{$uData.Set "exploredWR" (add 1 (or $uData.exploredWR 0))}}
+			{{else}}
+				{{$uData.items.Set $outcome.item 1}}
+			{{end}}
+		{{else}}
+			{{$out = print $outcome.descNoItem "\nearned " $outcome.spooky " Spooky points."}}
+		{{end}}
+	{{else}}
+		{{$out = $outcome.desc}}
+	{{end}}
+	{{$perks := or ($uData.perks) cslice}}
+	{{if eq $scene.id 6}}
+		{{if and (not ($uData.Get "The Shifting Sands of Time").explore) (eq (or $uData.realm 0) 1)}}
+            {{if eq $outcome.result "positive"}}
+                {{$perks = $perks.Append "Blessing of the Celestial Dune"}}
+				{{$out = printf "%s\n\nYou received Blessing of the Celestial Dune" $out}}
+            {{else}}
+                {{$perks = $perks.Append "Curse of the Lost Sands" }}
+				{{$out = printf "%s\n\nYou received Curse of the Lost Sands" $out}}
+            {{end}}
+            {{$award := or ($uData.Get "The Shifting Sands of Time") sdict}}
+            {{$award.Set "explore" 1}}
+            {{$uData.Set "The Shifting Sands of Time" $award}}
+		{{end}}
+	{{end}}
+	{{if eq $scene.id 7}}
+		{{if and (not ($uData.Get "The Whispering Woods of Echoing Shadows").explore) (eq (or $uData.realm 1) 2)}}
+            {{if eq $outcome.result "positive"}}
+                {{$perks = $perks.Append "Ethereal Blessing of the Spirit"}}
+				{{$out = printf "%s\n\nYou received Ethereal Blessing of the Spirit" $out}}
+            {{else}}
+                {{$perks = $perks.Append "Curse of the Withering Roots" }}
+				{{$out = printf "%s\n\nYou received Curse of the Withering Roots" $out}}
+            {{end}}
+            {{$award := or ($uData.Get "The Whispering Woods of Echoing Shadows") sdict}}
+            {{$award.Set "explore" 1}}
+            {{$uData.Set "The Whispering Woods of Echoing Shadows" $award}}
+		{{end}}
+	{{end}}
+	{{if eq $scene.id 8}}
+		{{if and (not ($uData.Get "The Frozen Abyss of Eternal Winter").explore) (eq (or $uData.realm 1) 4)}}
+            {{if eq $outcome.result "positive"}}
+                {{$perks = $perks.Append "Empowered by Shadows"}}
+				{{$out = printf "%s\n\nYou are now Empowered by Shadows" $out}}
+            {{else}}
+                {{$perks = $perks.Append "Cursed Pursuit" }}
+				{{$out = printf "%s\n\nYou are now under Cursed Pursuit" $out}}
+            {{end}}
+            {{$award := or ($uData.Get "The Frozen Abyss of Eternal Winter") sdict}}
+            {{$award.Set "explore" 1}}
+            {{$uData.Set "The Frozen Abyss of Eternal Winter" $award}}
+		{{end}}
+	{{end}}
+	{{$uData.Set "perks" $perks}}
+	{{$pet := ""}}{{$hasPet := false}}
+	{{if le (randInt 100) 5}}{{$pet = index ($data.pets | shuffle) 0}}{{end}}
+	{{if $uData.pet}}{{$hasPet = true}}{{end}}
+	{{if $pet}}
+		{{if (ne $pet.name (or $uData.pet ""))}}
+			{{if $hasPet}}
+				{{sendMessage nil (complexMessage "embed" (cembed "title" "🏮 **A New Companion Awaits!** 🏮" "description" (print "Name: " $pet.name "\nEffect: " $pet.effect "\n\nAs the ethereal light flickers, another shimmering creature appears before you, its presence filled with ancient energy and curiosity. Yet, your current companion steps back, knowing that its time has come to part ways.\n\nWith a heavy heart, you must choose to embrace this new ally, abandoning your current pet.\n\nMay the spirits guide you with your new partner by your side! 🌌") "color" 0xFF4500 "thumbnail" (sdict "url" $pet.img)) "reply" .Message.ID "buttons" (cslice (cbutton "label" "Abandon your current Pet" "custom_id" (print "hal_abandonForNew_" .User.ID "_" $pet.name) "style" 0x4) (cbutton "label" "Cancel" "custom_id" (print "hal_abandonCancel_" .User.ID) "style" 0x4)))}}
+			{{else}}
+				{{sendMessage nil (complexMessage "embed" (cembed "title" "🏮 **You have received a new companion!** 🏮" "description" (print "Name: " $pet.name "\nEffect: " $pet.effect "\n\nAs the ethereal light dims, a shimmering creature appears before you, its eyes filled with ancient wisdom and a playful spirit. With a gentle nudge, it promises to accompany you on your adventures, ensuring that every spooky encounter is a bit more rewarding.\n\nMay your journey be filled with serendipity and joy! 🌌") "color" 0x6A5ACD "thumbnail" (sdict "url" $pet.img)) "reply" .Message.ID)}}
+				{{$uData.Set "pet" $pet.name}}
+			{{end}}
+		{{end}}
+	{{end}}
+	{{$drop := index (shuffle $data.items) 0}}
+	{{if or (in $uData.equip "Cloak of Shadows") (in $uData.equip "Flame-Scorched Armor")}}
+		{{if le (randInt 100) 10}}
+			{{$out = printf "%s\n\nYou found a rare item (%s) as sect bonus." $out $drop.name}}
+			{{if $uData.items.HasKey $drop.id}}
+				{{$uData.items.Set $drop.id (add ($uData.items.Get $drop.id) 1)}}
+			{{else}}
+				{{$uData.items.Set $drop.id 1}}
+			{{end}}
+			{{$uData.Set "exploredWR" (add 1 (or $uData.exploredWR 0))}}
+		{{end}}
+	{{end}}
+	{{if eq (or $uData.pet "") "Ethereal Owl"}}
+		{{$drop := index (shuffle $data.items) 0}}
+		{{if le (randInt 100) 20}}
+			{{$embed.Set "description" (print $embed.Description "\n\nYou got rare item (" $drop.name "). (Ethereal Owl pet bonus)")}}
+			{{if $uData.items.HasKey $drop.id}}
+				{{$uData.items.Set $drop.id (add ($uData.items.Get $drop.id) 1)}}
+			{{else}}
+				{{$uData.items.Set $drop.id 1}}
+			{{end}}
+			{{$uData.Set "exploredWR" (add 1 (or $uData.exploredWR 0))}}
+		{{end}}
+	{{end}}
+	{{if eq (or $uData.pet "") "Shadow Cat"}}
+		{{$drop := index (shuffle $data.items) 0}}
+		{{if le (randInt 100) 15}}
+			{{$embed.Set "description" (print $embed.Description "\n\nYou got rare item (" $drop.name "). (Shadow Cat pet bonus)")}}
+			{{if $uData.items.HasKey $drop.id}}
+				{{$uData.items.Set $drop.id (add ($uData.items.Get $drop.id) 1)}}
+			{{else}}
+				{{$uData.items.Set $drop.id 1}}
+			{{end}}
+			{{$uData.Set "exploredWR" (add 1 (or $uData.exploredWR 0))}}
+		{{end}}
+	{{end}}
+	{{$extra := 0}}
+	{{if inFold $uData.perks "Blessing of the Celestial Dune"}}
+		{{if le (randInt 100) 15}}
+			{{$embed.Set "description" (print $embed.Description "\n\nYou got rare item (" $drop.name "). (Blessing of the Celestial Dune)\n and extra 1,500 spooky points")}}
+			{{if $uData.items.HasKey $drop.id}}
+				{{$uData.items.Set $drop.id (add ($uData.items.Get $drop.id) 1)}}
+			{{else}}
+				{{$uData.items.Set $drop.id 1}}
+			{{end}}
+			{{$uData.Set "exploredWR" (add 1 (or $uData.exploredWR 0))}}
+			{{$extra = 1500}}
+		{{end}}
+	{{end}}
+	{{if inFold $uData.perks "Curse of the Lost Sands"}}
+		{{if le (randInt 100) 15}}
+			{{$extra = -2000}}
+		{{end}}
+	{{end}}
+	{{if inFold $uData.perks "Ethereal Blessing of the Spirit"}}
+		{{$extra = add $extra (mult 0.1 $outcome.spooky)}}
+		{{$embed.Set "description" (print $embed.Description "\n\nYou got extra spooky " $extra " points (Ethereal Blessing of the Spirit)")}}
+	{{end}}
+	{{if inFold $uData.perks "Curse of the Withering Roots"}}
+		{{$extra = add $extra (mult -0.1 $outcome.spooky)}}
+		{{$embed.Set "description" (print $embed.Description "\n\nYou lost 10% of the spooky points (Curse of the Withering Roots)")}}
+	{{end}}
+	{{if inFold $uData.perks "Spectral Curse"}}
+		{{if le (randInt 100) 15}}
+			{{$extra = add $extra (mult -0.25 $outcome.spooky)}}
+			{{$embed.Set "description" (print $embed.Description "\n\nYou lost 25% of the spooky points (Spectral Curse)")}}
+		{{end}}
+	{{end}}
+	{{$uData.Set "sPoints" (add (or $uData.sPoints 0) $outcome.spooky $extra)}}
+	{{$embed.Set "title" $options.choice}}
+	{{$embed.Set "description" $out}}
+	{{updateMessage (cembed $embed)}}
+	{{dbSet .User.ID "hal" $uData}}
+{{end}}

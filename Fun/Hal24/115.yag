@@ -1,0 +1,69 @@
+command: add4
+{{$delve := sdict 
+"oasis" (sdict 
+	"step_1" (sdict "clue" "As daylight wanes, the golden sands whisper of a hidden truth, where shadows stretch and time bends in the desert's embrace." "reward" nil "choices" (cslice 
+		(sdict "option" 1 "desc" "Venture to the base of the tallest dune, where the night sky shrouds ancient secrets." "response" "You discover a concealed entrance, a hidden passage that breathes the air of forgotten tales." "correct" true "next" "step_2" "label" "Explore the Dune") 
+		(sdict "option" 2 "desc" "Follow the dying light of the sun westward, chasing the fleeting warmth of day." "response" "You stumble across endless dunes, the whispers of the past eluding your grasp." "correct" false "label" "Chase the Sun")
+		(sdict "option" 3 "desc" "Tune your senses to the breeze, seeking the whispers of long-lost souls in the air." "response" "Though you hear echoes of ancient voices, they lead you deeper into the desolation." "correct" false "label" "Listen to the Breeze")))
+	"step_2" (sdict "clue" "Within the shadowed chamber lies a tapestry of ancient symbols, glimmering faintly as if they harbor forgotten tales." "reward" nil "choices" (cslice
+		(sdict "option" 1 "desc" "Delve deeper into the chamber's mysteries and uncover hidden scrolls." "response" "You uncover a dusty scroll that reveals a riddle, illuminating the path to the oasis." "correct" true "next" "step_3" "label" "Uncover Hidden Scrolls")
+		(sdict "option" 2 "desc" "Attempt to decipher the symbols' meanings, seeking knowledge of old battles." "response" "The symbols tell tales of valor, but they offer no guidance to your quest." "correct" false "label" "Decipher Symbols")
+		(sdict "option" 3 "desc" "Follow the haunting echoes within, allowing them to lead you further into the desert." "response" "You find yourself lost in a maze of echoes, with no signs of the oasis." "correct" false "label" "Follow the Echoes")))
+	"step_3" (sdict "clue" "Armed with the scroll's secrets, you now face a choice to pursue the path of the ancients or tread your own." "reward" nil "choices" (cslice 
+		(sdict "option" 1 "desc" "Look skyward to the stars, seeking their alignment with the sands below." "response" "The stars align, guiding you toward the secret location of the oasis." "correct" true "next" "step_4" "label" "Gaze at the Stars")
+		(sdict "option" 2 "desc" "Dig fervently at the dune's base, hoping to unearth hidden waters." "response" "You dig tirelessly, but only find sand slipping through your fingers." "correct" false "label" "Dig in the Dunes")
+		(sdict "option" 3 "desc" "Consult a wandering spirit for guidance based on the scroll's riddles." "response" "The spirit appears, but its wisdom remains locked away, offering you nothing." "correct" false "label" "Consult the Spirit")))
+	"step_4" (sdict "clue" "The stars whisper the location, yet the desert's heart tests your resolve and patience." "reward" nil "choices" (cslice 
+		(sdict "option" 1 "desc" "Proceed to the precise point foretold by the stars and the scroll." "response" "You discover the hidden oasis, shimmering under the moonlight, a true sanctuary." "correct" true "next" "step_5" "label" "Follow the Star Path")
+		(sdict "option" 2 "desc" "Risk everything by attempting to drink from the dry sands, trusting in a miracle." "response" "The sands mock you, shifting and offering nothing but futility." "correct" false "label" "Drink from the Sands") 
+		(sdict "option" 3 "desc" "Call upon the desert spirits, imploring them to reveal their secrets." "response" "Your call echoes into the void; the spirits remain silent, your plea unheard." "correct" false "label" "Invoke the Spirits")))
+	"step_5" (sdict "clue" "With ancient knowledge guiding you, the oasis beckons, a sanctuary of life amidst the desolation." "img" "https://i.vgy.me/fUVqoq.png" "reward" "sunstone" "choices" (cslice
+		(sdict "option" 1 "desc" "Approach with reverence, offering a token of gratitude to the spirits of the oasis." "response" "The waters surge forth, blessing you with rejuvenation and power." "correct" true "label" "Offer a Token")
+		(sdict "option" 2 "desc" "Dash forward, parched and desperate, seeking to quench your thirst." "response" "As you lunge forward, the waters recede, teasing your thirst with their elusiveness." "correct" false "label" "Lunge for Water")
+		(sdict "option" 3 "desc" "Channel your magic to summon the waters, believing in your strength." "response" "Your magic falters against the sands, leaving you empty-handed and weary." "correct" false "label" "Summon the Waters")))
+)
+
+"woods" (sdict
+	"step_1" (sdict "clue" "🌌 The path before you glimmers under the ghostly lanterns, hinting at secrets waiting to be unveiled." "reward" nil "choices" (cslice (sdict "option" 1 "desc" "Follow the soft glow of the lanterns deeper into the woods." "response" "You uncover a hidden clearing, where the air hums with ancient magic." "correct" true "next" "step_2" "label" "Follow the Lanterns")
+	(sdict "option" 2 "desc" "Venture off the path and explore the shadows around you." "response" "The shadows shift ominously, leading you astray into the darkness." "correct" false "label" "Explore the Shadows")
+	(sdict "option" 3 "desc" "Listen closely to the whispers carried by the breeze." "response" "The whispers fade away, leaving you alone in the silence of the night." "correct" false "label" "Listen to the Whispers")))
+	"step_2" (sdict "clue" "🌿 The clearing reveals ancient symbols etched into the bark of an ancient tree, pulsating with energy." "reward" nil "choices" (cslice (sdict "option" 1 "desc" "Study the symbols to decipher their meaning." "response" "You grasp the essence of the symbols, revealing a path to the sacred grove." "correct" true "next" "step_3" "label" "Decipher Symbols")
+	(sdict "option" 2 "desc" "Touch the bark, hoping to awaken its hidden powers." "response" "The bark resonates but offers no guidance, leaving you puzzled." "correct" false "label" "Touch the Bark")
+	(sdict "option" 3 "desc" "Search the area for any hidden artifacts." "response" "You find nothing but leaves, the secrets eluding your grasp." "correct" false "label" "Search for Artifacts")))
+	"step_3" (sdict "clue" "✨ With newfound knowledge, you stand at the crossroads of fate, guided by the ancient symbols." "reward" nil "choices" (cslice (sdict "option" 1 "desc" "Pursue the path indicated by the symbols, trusting in their guidance." "response" "The symbols glow brighter, leading you toward a hidden treasure." "correct" true "next" "step_4" "label" "Follow the Symbols")
+	(sdict "option" 2 "desc" "Wander aimlessly, hoping to stumble upon something of value." "response" "Your aimless wandering leads to disappointment, with nothing in sight." "correct" false "label" "Wander Aimlessly")
+	(sdict "option" 3 "desc" "Consult the ancient tree for further guidance." "response" "The tree stands silent, its wisdom locked away from you." "correct" false "label" "Consult the Tree")))
+	"step_4" (sdict "clue" "🌟 As you approach the grove, the air thickens with magic, and the lanterns flicker with anticipation." "reward" nil "choices" (cslice (sdict "option" 1 "desc" "Enter the grove with reverence, attuning yourself to its energies." "response" "You step inside, and the grove reveals its secret—a bountiful Nature Seed." "correct" true "next" "step_5" "label" "Enter the Grove")
+	(sdict "option" 2 "desc" "Charge into the grove, seeking immediate rewards." "response" "Your eagerness disrupts the balance, and the grove rejects your presence." "correct" false "label" "Charge In")
+	(sdict "option" 3 "desc" "Call upon the spirits of the grove to aid you." "response" "Your call goes unanswered, leaving you to face the grove alone." "correct" false "label" "Call the Spirits")))
+	"step_5" (sdict "clue" "🌱 In the heart of the grove, a radiant Nature Seed glimmers, promising to enhance your abilities." "img" "https://i.vgy.me/A6OrQe.png" "reward" "nature seed" "choices" (cslice 
+	(sdict "option" 1 "desc" "Approach the Nature Seed with gratitude, offering a small token." "response" "The seed pulses with energy, blessing you in return for your respect." "correct" true "label" "Offer a Token")
+	(sdict "option" 2 "desc" "Snatch the seed hastily, believing it to be your due." "response" "The grove reacts angrily, and you leave empty-handed." "correct" false "label" "Snatch the Seed")
+	(sdict "option" 3 "desc" "Channel your energy to commune with the seed." "response" "Your efforts fall flat, and the seed remains out of reach." "correct" false "label" "Commune with the Seed")))
+)
+
+"castle" (sdict
+	"step_1" (sdict "clue" "As you approach the Cursed Citadel, shadows dance along its walls, and the air is thick with the scent of ancient decay. The gates creak ominously, inviting you to discover the secrets within." "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Push open the gates and step inside, ready to confront the darkness." "response" "The gates groan as you enter, revealing a dimly lit hall filled with ghostly echoes." "correct" true "next" "step_2" "label" "Enter the Citadel")
+	(sdict "option" 2 "desc" "Circle around the citadel, looking for an alternative entrance." "response" "You find only crumbling walls and an ominous silence, the darkness calling to you." "correct" false "label" "Search for Another Way")
+	(sdict "option" 3 "desc" "Consult the shadows, hoping they will guide you." "response" "The shadows whisper secrets, but their guidance leads you deeper into confusion." "correct" false "label" "Consult the Shadows")))
+	"step_2" (sdict "clue" "The hall is adorned with ancient tapestries depicting long-forgotten battles. The whispers of the past seem to echo, hinting at the power sealed within." "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Study the tapestries, hoping to unravel their stories." "response" "You decipher a hidden message that reveals the location of the citadel's heart." "correct" true "next" "step_3" "label" "Examine Tapestries")
+	(sdict "option" 2 "desc" "Ignore the tapestries and continue deeper into the citadel." "response" "The voices grow louder, but you miss valuable insights that could aid your quest." "correct" false "label" "Ignore the Tapestries")
+	(sdict "option" 3 "desc" "Draw upon your cultivation skills to commune with the spirits." "response" "The spirits reveal fragments of truth, but their answers remain shrouded in riddles." "correct" false "label" "Commune with Spirits")))
+	"step_3" (sdict "clue" "A heavy door stands before you, carved with runes of power. The air vibrates with dark energy, promising great rewards or dire consequences" "reward" nil "choices" (cslice 
+	(sdict "option" 1 "desc" "Push open the door, willing to face whatever lies beyond." "response" "The door creaks open, revealing a chamber bathed in shadow and filled with cursed relics." "correct" true "next" "step_4" "label" "Open the Door")
+	(sdict "option" 2 "desc" "Examine the runes carefully, searching for a way to unlock the door's secrets." "response" "The runes twist and shift, but you cannot decipher their meaning in time." "correct" false "label" "Study the Runes")
+	(sdict "option" 3 "desc" "Attempt to channel your inner strength to break the door down." "response" "Your energy wanes against the door's formidable barrier, leaving you exposed." "correct" false "label" "Break the Door Down")))
+	"step_4" (sdict "clue" "Inside, the chamber is filled with a swirling mist, and a massive throne looms at the center, shadowed by dark power. The air crackles with tension, urging you to claim the source of its might" "reward" nil "choices" (cslice
+	(sdict "option" 1 "desc" "Approach the throne and claim the source of power." "response" "You grasp the essence of the shadows, empowering yourself with dark energy." "correct" true "next" "step_5" "label" "Claim the Power")
+    (sdict "option" 2 "desc" "Investigate the mist, searching for hidden treasures." "response" "The mist obscures your vision, and you stumble into a trap, ensnared by dark magic." "correct" false "label" "Search the Mist")
+    (sdict "option" 3 "desc" "Call upon the spirits of the citadel for assistance." "response" "The spirits echo your call, but their power remains untapped, leaving you vulnerable." "correct" false "label" "Summon the Spirits")))
+	"step_5" (sdict "clue" "As you channel the dark energy, the room trembles with ancient power. The shadows swirl around you, forming into a tangible essence" "img" "https://i.vgy.me/gQQbWT.png" "reward" "shadow essence" "choices" (cslice 
+	(sdict "option" 1 "desc" "Embrace the shadows, allowing them to merge with your spirit." "response" "You gain immense power, but at a cost. You now bear the mark of the shadows." "correct" true "label" "Embrace the Shadows")
+	(sdict "option" 2 "desc" "Try to contain the power within a vessel." "response" "The vessel shatters, releasing a surge of energy that overwhelms you." "correct" false "label" "Contain the Power")
+	(sdict "option" 3 "desc" "Reject the darkness and flee the chamber." "response" "The shadows lash out in fury, but you manage to escape with your life, albeit empty-handed." "correct" false "label" "Flee the Chamber")))
+)}}
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{$data.Set "delve" $delve}}
+{{dbSet 0 "hal" $data}}Added Data

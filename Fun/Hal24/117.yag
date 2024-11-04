@@ -1,0 +1,35 @@
+command: ;adv
+{{$data := or (dbGet 0 "hal").Value sdict}}{{if not $data}}{{return}}{{end}}
+{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " .User.Mention " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{return}}{{end}}
+{{$cRealm := or $uData.realm 1}}
+{{$uData.Set "realm" $cRealm}}
+{{dbSet .User.ID "hal" $uData}}
+{{$realm := $data.realms.Get (print "realm_" $cRealm)}}
+{{if not $realm}}something went wrong :/{{return}}{{end}}
+{{$embed := sdict "title" $realm.name "color" 0x9B30FF "thumbnail" (sdict "url" $realm.img)}}
+{{$out := print $realm.desc "\n\n**Challenges:**"}}{{$butts := cslice}}
+{{$uProg := or ($uData.Get $realm.name) sdict}}
+{{range $realm.chal}}
+	{{- $out = printf "%s\n- %s" $out .desc}}
+	{{- if eq .type "explore"}}
+		{{- $butts = $butts.Append (cbutton "label" (printf "Explored: %d/1" (or ($uProg.Get .type) 0)) "disabled" true "style" 0x2)}}
+	{{- end}}
+	{{- if eq .type "haunt"}}
+		{{- $butts = $butts.Append (cbutton "label" (printf "Haunted %d/%d" (or ($uProg.Get .type) 0) .count) "disabled" true "style" 0x2)}}
+	{{- end}}
+	{{- if eq .type "event"}}
+		{{- $butts = $butts.Append (cbutton "label" (printf "Survived %d/%d" (or ($uProg.Get .type) 0) .count) "disabled" true "style" 0x2)}}
+	{{- end}}
+	{{- if eq .type "kill"}}
+		{{- $out = printf "%s [Kill %d %s (%s) to get '%s.']" $out .count .kind .name .rewards.reward}}
+		{{- $butts = $butts.Append (cbutton "label" (printf "%s killed (%d/%d)" .name (or ($uProg.Get .type) 0) .count) "disabled" true "style" 0x2)}}
+	{{- end}}
+	{{- if eq .type "discover"}}{{- $dis := false}}{{- $bName := (print "Explore " (title .name))}}
+		{{- $out = printf "%s [Complete the challenge `%s` and find the '%s'.]" $out .name .rewards.reward}}
+		{{- if (($uData.Get $realm.name).Get .type)}}{{$dis = true}}{{$bName = (print "Explored " (title .name))}}{{end}}
+		{{- $butts = $butts.Append (cbutton "label" $bName "custom_id" (print "hal_disc_" $.User.ID "_" .name) "style" 0x3 "disabled" $dis)}}
+	{{- end -}}
+{{end}}
+{{$butts = $butts.Append (cbutton "label" "Next" "custom_id" (print "hal_disc_" .User.ID "_next") "style" 0x3)}}
+{{$embed.Set "description" $out}}
+{{sendMessageNoEscape nil (complexMessage "content" .User.Mention "embed" $embed "buttons" $butts)}}

@@ -1,0 +1,118 @@
+Trigger: None
+{{if not .ExecData}}{{return}}{{end}}
+{{$spawn := 997263718826123354}}
+{{$e := .ExecData}}
+{{$data := (dbGet 0 "hal").Value}}
+{{if eq $e.key "hal_miniboss"}}
+	{{if not $data}}{{return}}{{end}}
+	{{$msg := getMessage $e.cID $e.mID}}{{if not $msg}}{{return}}{{end}}
+	{{$embed := index $msg.Embeds 0 | structToSdict}}
+	{{$pList := or (dbGet $e.cID "pList").Value dict}}{{$out := ""}}{{$rewards := dict}}
+	{{range $k, $v := $pList}}{{$reward := dict}}
+		{{- $gain := randInt 5000}}
+		{{- $out = printf "%s- <@%d> gained %d Spooky points 🎃\n" $out $k $gain}}
+		{{- $reward.Set "sPoints" $gain}}
+		{{- if eq (randInt 100 | toInt) 0 1 2 3 4 5 6 7 8 9}}
+			{{- $drop := index (shuffle $data.items) 0}}
+			{{- $out = printf "%s-# ⤷ and a rare 🎁 `%s`.\n\n" $out $drop.name}}
+			{{- $reward.Set "items" $drop}}
+        {{- end}}
+		{{- $rewards.Set $k $reward}}
+	{{else}}
+		{{- $out = ".... no one participated :("}} 
+	{{end}}
+	{{$embed.Set "description" (printf "🎉 Bravo, brave souls! You have triumphed over the spectral adversary and emerged victorious in the Halloween showdown. The echoes of your courage resonate through the haunted realm.\n\n🌟 Claim your well-deserved spoils, and may the spirit of Halloween continue to guide your journey! 🎃✨\n\nPlayer(s) participated:\n%s" $out)}}
+	{{/* editMessage $e.cID $e.mID (complexMessageEdit "embed" $embed "buttons" (cbutton "label" "⚔️ Attack" "custom_id" "hal_miniboss" "style" 0x4 "disabled" true)) */}}
+	{{dbDel $e.cID "pList"}}
+	{{dbDel $spawn "halMiniboss" }}
+	{{execCC $.CCID nil 1 (sdict "key" "rewards" "name" $e.name "rewards" $rewards "tPlayers" (len $pList) "cID" $e.cID "mID" $e.mID "out" $embed.description)}}
+{{else if eq $e.key "rewards"}}
+	{{$i := 0}}{{$thre := 5}}{{$out := (or $e.out "")}}
+	{{sendMessage 1290767418469122159 (complexMessage "content" "Started" "file" (json $e.rewards true))}}
+	{{range $k, $v := $e.rewards}}
+		{{- $uData := or (dbGet (toInt $k) "hal").Value sdict}}
+		{{- range $cat, $val := $v}}
+			{{- if eq $cat "items"}}
+				{{- $uItems := $uData.Get $cat}}
+				{{- $uItems.Set $val.id (or ($uItems.Get $val.id) 0 | add 1)}}
+				{{- $uData.Set $cat $uItems}}
+			{{- end}}
+		{{- end}}
+		{{- $extra := 0}}
+		{{- if inFold $uData.perks "Empowered by Shadows"}}
+			{{- $extra = add $extra (mult 0.15 ($v.Get "sPoints"))}}
+			{{- $out = (print $out "- <@" $k "> gain 15% extra spooky points (Empowered by Shadows)\n")}}
+		{{- end}}
+		{{- if inFold $uData.perks "Cursed Pursuit"}}
+			{{- $extra = add $extra (mult -0.15 ($v.Get "sPoints"))}}
+			{{- $out = (print $out "- <@" $k "> lost 15% spooky points (Cursed Pursuit)\n")}}
+		{{- end}}
+		{{- $uData.Set "sPoints" (add (or ($uData.Get "sPoints") 0) ($v.Get "sPoints") $extra)}}
+		{{- $uData.Set "mbKills" (or ($uData.Get "mbKills") 0 | add 1)}}
+		{{- if in $uData.equip "Wraith Blade"}}
+			{{- if le (randInt 100) 15}}
+				{{- $drop :=  index (shuffle $data.items) 0}}
+				{{- $out = printf "%s- <@%d> received a rare item (%s). (Wraith Blade bonus.)\n" $out $k $drop.name}}
+				{{- $uItems := $uData.Get "items"}}
+				{{- $uItems.Set $drop.id (or ($uItems.Get $drop.id) 0 | add 1)}}
+				{{- $uData.Set "items" $uItems}}
+			{{- end}}
+		{{- end}}
+		{{- if in $uData.equip "Cursed Flame Sword"}}
+			{{- $sGain := mult (randInt 800 1000) $e.tPlayers}}
+			{{- $out = printf "%s- <@%d> received a extra %d spooky points. (Cursed Flame Sword bonus.)\n" $out $k $sGain}}
+			{{- $uData.Set "sPoints" (add (or $uData.sPoints 0) $sGain)}}
+		{{- end}}
+		{{- if in $uData.pet "Phantom Rabbit"}}
+			{{- if le (randInt 100) 10}}
+				{{- $drop :=  index (shuffle $data.items) 0}}
+				{{- $out = printf "%s- <@%d> received a rare item (%s). (Phantom Rabbit pet bonus)\n" $out $k $drop.name}}
+				{{- $uItems := $uData.Get "items"}}
+				{{- $uItems.Set $drop.id (or ($uItems.Get $drop.id) 0 | add 1)}}
+				{{- $uData.Set "items" $uItems}}
+			{{- end}}
+		{{- end}}
+		{{- if eq $e.name "Shadow Wraith"}}
+			{{- $award := or ($uData.Get "The Cursed Citadel of Shadows") sdict}}
+			{{- $award.Set "kill" (add 1 (or $award.kill 0))}}
+			{{- $uData.Set "The Cursed Citadel of Shadows" $award}}
+		{{- end}}
+		{{- if eq $e.name "Glacial Wraith"}}
+			{{- $award := or ($uData.Get "The Frozen Abyss of Eternal Winter") sdict}}
+			{{- $award.Set "kill" (add 1 (or $award.kill 0))}}
+			{{- $uData.Set "The Frozen Abyss of Eternal Winter" $award}}
+		{{- end}}
+		{{- if eq $e.name "The Gloomwader"}}
+			{{- $award := or ($uData.Get "The Twisted Marsh of Lost Souls") sdict}}
+			{{- $award.Set "kill" (add 1 (or $award.kill 0))}}
+			{{- $uData.Set "The Twisted Marsh of Lost Souls" $award}}
+		{{- end}}
+		{{- dbSet $k "hal" $uData}}{{$i = add 1 $i}}
+		{{- $e.rewards.Del $k}}
+		{{- if ge $i $thre}}
+			{{- if $e.rewards}}
+				{{- sendMessage 1290767418469122159 (complexMessage "content" "Passed" "file" (json $e.rewards true))}}
+				{{- execCC $.CCID nil 1 (sdict "key" "rewards" "name" $e.name "out" $out "rewards" $e.rewards "tPlayers" $e.tPlayers "cID" $e.cID "mID" $e.mID "embed" $e.embed)}}
+				{{- return}}
+			{{- end}}
+		{{- end}}
+	{{end}}
+	{{- if $e.out}}
+		{{- sendMessage $e.cID (complexMessage "embed" (cembed "color" 0x9932cc "description" $out))}}
+		{{- deleteMessage $e.cID $e.mID 1}}
+	{{- end}}
+{{end}}
+{{if eq $e.key "hal_survive"}}
+	{{try}}
+		{{if (getMessage $e.cID $e.mID)}}
+			{{$uData := or (dbGet $e.uID "hal").Value sdict}}
+			{{$loss := randInt -10000 0}}
+			{{sendMessageNoEscape $e.cID (complexMessage "content" (printf "<@%d>" $e.uID) "embed" (cembed "description" (print "Time slips away as you hesitate, and the marsh's dense fog thickens around you. The ground beneath your feet softens, pulling you deeper into its cold, grasping mire. You feel the weight of your indecision as the marsh tightens its grip... there’s no escape now.\n\nYou lost " (mult -1 $loss) " Spooky points.") "color" 0xff0000))}}
+			{{$uData.Set "sPoints" (add (or $uData.sPoints 0) $loss)}}
+			{{dbSet $e.uID "hal" $uData}}
+			{{dbDel $e.uID "halSurvive"}}
+			{{deleteMessage $e.cID $e.mID 1}}
+		{{end}}
+	{{catch}}
+	{{end}}
+{{end}}

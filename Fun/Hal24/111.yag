@@ -1,0 +1,102 @@
+Command: 2
+{{$treat :=  (cslice
+"🍬 Behold, noble %s! You've reached for the ethereal sweetness of the Enchanting Treat, a confection beyond mortal delights. With each delightful bite, a shimmering mist surrounds you, transporting you to a realm of magic. Your journey earns you %d points in the ghostly ledger, a testament to your connection to the supernatural. Well done, adventurer!"
+"🍬 Greetings, seeker of delights, %s! As you savor the Enchanting Treat, the air is filled with a shimmering mist and magical sweetness. With each bite, you've earned %d points in the spectral realm, acknowledging your courage and connection to the supernatural. Bravo! May the magical sweetness linger in your memory."
+"🍬 Oh, daring %s! The Enchanting Treat beckons, a magical confection that transports you to a realm where sweetness and mystery intertwine. With each delightful bite, points in the ghostly ledger accumulate—a total of %d to honor your bravery. Well done, noble soul!"
+"🍬 Hark, valiant %s! Beyond the virtual door, the Enchanting Treat reveals its enchanting nature. As you indulge in the magical sweetness, you've earned %d points in the ghostly ledger. The sweetness of the ethereal stands as a testament to your courage. Congratulations, adventurer!"
+"🍬 Greetings, seeker of delights, %s! The Enchanting Treat, a magical confection, reveals its sweetness beyond mortal understanding. With each delightful bite, you've earned %d points in the spectral realm, a reflection of your bravery and connection to the supernatural. Bravo, noble soul!"
+"🍬 Behold, brave %s! The Enchanting Treat, a confection beyond mortal sweetness, awaits. With each delightful bite, a shimmering mist surrounds you, and %d points in the ghostly ledger stand as a testament to your connection to the supernatural. Congratulations on your magical triumph!"
+"🍬 Noble %s, as you reach for the spectral door, the Enchanting Treat reveals its enchanting side. With each bite, you're transported to a realm where sweetness and magic intertwine. Points in the ghostly ledger, totaling %d, acknowledge your courage and connection to the supernatural. Well done, adventurer!"
+"🍬 Greetings, seeker of delights, %s! Alas, the Enchanting Treat has chosen a brighter path. Magical sweetness and delightful bites transport you to a realm where sweetness and mystery intertwine. In your encounter with the unseen confection, %d points are added to the ghostly ledger, marking the sweetness that illuminates your journey."
+"🍬 Valiant %s, as you stand before the virtual door, the Enchanting Treat unveils its magical nature. With each delightful bite, you're transported to a realm where sweetness and magic intertwine. In your triumph, %d points in the ghostly ledger honor your courage. Congratulations on savoring the magical sweetness!"
+"🍬 Beware, daring %s! The Enchanting Treat, a confection beyond mortal sweetness, unveils its magical nature. With each delightful bite, a shimmering mist surrounds you, and %d points in the ghostly ledger acknowledge your connection to the supernatural. Well played, adventurer!"
+)}}
+{{ $haunt := (sdict 
+	"draw" (cslice 
+        "👻 Witness the spectral chaos unfold! %s and %s, intertwined in the dance of the unknown, have haunted each other. A symphony of spooks reverberates through the haunted realm!"
+        "👻 Double the fright! In the ethereal dance of shadows, %s and %s exchanged ghostly scares, giving rise to a haunted convergence. Spooky points are lost by both in the spectral tango."
+        "👻 Ghostly showdown commences! %s and %s, locked in a spectral duel, both ventured to scare the other. The haunting dance unfolds in a dramatic spectral performance."
+    )
+    "draw_win" (cslice 
+        "👻 In a spectral dance of equilibrium, %s and %s intertwine their haunting energies. The result? A harmonious convergence where both spirits triumph, earning %d spooky points each!"
+        "👻 Behold the haunting unity! %s and %s, in a mystical exchange, both claim victory in the spectral dance. Spooky points flow to both, creating a symphony of spectral equilibrium."
+        "👻 The spectral forces align! %s and %s, in a ghostly tango, have each earned %d spooky points. The haunted realm echoes with the harmony of dual triumph!"
+    )
+    "lose" (cslice 
+        "👻 Alas! %s, in an attempt to weave ghostly fear upon %s, found themselves ensnared in a spectral tapestry of their own creation. A self-ghosting tale unfolds!"
+        "👻 A courageous venture to spook %[3]s has twisted into a haunting reflection. The specter of fright now lingers upon %[2]s."
+        "👻 Oh, dear %[2]s! The pursuit to haunt %[3]s has taken an unexpected turn, unveiling a frightful revelation. Ghostly echoes resonate with a tale of unexpected spooks."
+    )
+    "self_win" (cslice 
+        "👻 Unveiling a tale of self-ghosting! %s, in a daring venture to spook themselves, has conjured a spectral surprise. Spooky points are earned in this solo dance of haunting!"
+        "👻 A haunting reflection! %s, with courage unmatched, successfully spooks themselves. The echoes of their own fright resonate, earning them spooky points. A self-ghosting journey unfolds!"
+        "👻 Oh, brave %s! In a twist of spectral fate, the pursuit of self-ghosting has proven successful. earning spooky points in this haunting solo venture!"
+    )
+    "win" (cslice 
+        "👻 In the eerie tapestry of the spectral realm, behold! %s has summoned a spine-chilling haunt upon %s. The very air resonates with ghostly fright!"
+        "👻 Brave souls, take heed! %s, a harbinger of the supernatural, has bestowed upon %s a hair-raising scare. Darkness converges, and spooky points are claimed."
+        "👻 Tremble, %[3]s! A spectral presence, conjured by %[2]s, sends shivers down the spine in a masterful haunt. Spooky points tremor in the haunting aftermath!"
+    ))}}
+{{$negTrick :=  (cslice 
+    "👻 Beware, valiant %s! Alas, the Cryptic Trick reveals its darker side. Shadows dance with mockery, and haunting laughter echoes through the corridors. As illusions ensnare your senses and spectral riddles confound your mind, you've fallen victim. %d points are subtracted from the ghostly ledger, a mark of the trickery that shadows your journey."
+    "👻 Greetings, seeker of mysteries, %s! The Cryptic Trick, ever mischievous, unfolds its illusions with a touch of malevolence. As shadows mock your courage and spectral riddles confound your senses, %d points are deducted from the ghostly ledger. A lesson learned in the dance of shadows."
+    "👻 Oh, daring %s! The Cryptic Trick, a phantom of deceptive whimsy, weaves illusions of darkness around you. Shadows dance with sinister glee, and as you navigate through the unseen game, %d points are subtracted from the ghostly ledger—a price paid for daring the spectral unknown."
+    "👻 Hark, valiant %s! Beyond the virtual door, the Cryptic Trick reveals its trickster nature. Illusions waver with malevolence, and spectral riddles confound your very perception. In your encounter with the unseen game, %d points are deducted from the ghostly ledger, marking the darker path you've tread."
+    "👻 Greetings, seeker of mysteries, %s! The Cryptic Trick, in its mischievous revelry, bestows upon you a haunting memory. As shadows dance with mockery and spectral riddles ensnare your mind, %d points are subtracted from the ghostly ledger. A lesson learned in the dance of shadows and tricks."
+    "👻 Behold, brave %s! Alas, the Cryptic Trick has played its hand, weaving illusions of darkness around you. Shadows mock your courage, and as you navigate through the unseen game, %d points are subtracted from the ghostly ledger—a mark of the trickery that shrouds your journey."
+    "👻 Noble %s, as you reach for the spectral door, the Cryptic Trick reveals its malevolent side. Shadows dance with sinister glee, and spectral riddles ensnare your senses. In your encounter with the unseen game, %d points are deducted from the ghostly ledger—a price paid for daring the spectral unknown."
+    "👻 Greetings, seeker of mysteries, %s! Alas, the Cryptic Trick has chosen a darker path. Illusions waver with malevolence, and spectral riddles confound your very perception. In your encounter with the unseen game, %d points are subtracted from the ghostly ledger, marking the trickery that shadows your journey."
+    "👻 Valiant %s, as you stand before the virtual door, the Cryptic Trick unveils its mischievous nature. Shadows mock your courage, and spectral riddles ensnare your senses. In your encounter with the unseen game, %d points are deducted from the ghostly ledger—a lesson learned in the dance of shadows."
+    "👻 Beware, daring %s! The Cryptic Trick, a phantom of deceptive whimsy, reveals its trickster nature. Shadows dance with sinister glee, and as you navigate through the unseen game, %d points are subtracted from the ghostly ledger. A mark of the darker path chosen in the spectral unknown."
+)}}
+{{$negTrickMute := (cslice 
+    "🔥 Beware, valiant %s! Alas, the Banishing Trick reveals its infernal nature. Shadows warp around you, and with a sinister laughter, you find yourself banished to hell for the %dm.\n\n%d points are subtracted from the ghostly ledger, marking the torment endured in the spectral abyss."
+    "🔥 Greetings, seeker of mysteries, %s! The Banishing Trick, ever malevolent, unfolds its infernal scheme. As shadows mock your courage and spectral laughter echoes, you find yourself banished to hell for the %dm.\n\n%d points are deducted from the ghostly ledger. A lesson learned in the dance of infernal shadows."
+    "🔥 Oh, daring %s! The Banishing Trick, a tormentor of souls, weaves illusions of darkness around you. Shadows dance with sinister glee, and as you navigate through the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are subtracted from the ghostly ledger—a price paid for daring the infernal unknown."
+    "🔥 Hark, valiant %s! Beyond the virtual door, the Banishing Trick reveals its infernal whimsy. Illusions waver with malevolence, and spectral laughter taunts your very existence. In your encounter with the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are deducted from the ghostly ledger, marking the infernal path you've tread."
+    "🔥 Greetings, seeker of mysteries, %s! The Banishing Trick, in its malevolent revelry, bestows upon you an infernal fate. As shadows dance with mockery and spectral laughter ensnares your mind, you find yourself banished to hell for the %dm.\n\n%d points are subtracted from the ghostly ledger. A lesson learned in the dance of infernal shadows."
+    "🔥 Behold, brave %s! Alas, the Banishing Trick has played its infernal hand, weaving illusions of darkness around you. Shadows mock your courage, and as you navigate through the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are subtracted from the ghostly ledger—a mark of the infernal torment that shrouds your journey."
+    "🔥 Noble %s, as you reach for the spectral door, the Banishing Trick reveals its infernal side. Shadows dance with sinister glee, and spectral laughter ensnares your senses. In your encounter with the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are deducted from the ghostly ledger—a price paid for daring the infernal unknown."
+    "🔥 Greetings, seeker of mysteries, %s! Alas, the Banishing Trick has chosen a darker path. Illusions waver with malevolence, and spectral laughter taunts your very existence. In your encounter with the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are subtracted from the ghostly ledger, marking the infernal torment that shadows your journey."
+    "🔥 Valiant %s, as you stand before the virtual door, the Banishing Trick unveils its infernal nature. Shadows mock your courage, and spectral laughter ensnares your senses. In your encounter with the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are deducted from the ghostly ledger—a lesson learned in the dance of infernal shadows."
+    "🔥 Beware, daring %s! The Banishing Trick, a tormentor of souls, reveals its infernal whimsy. Shadows dance with sinister glee, and as you navigate through the unseen game, you find yourself banished to hell for the %dm.\n\n%d points are subtracted from the ghostly ledger. A mark of the infernal path chosen in the spectral unknown."
+)}}
+{{$posTrick := (cslice 
+    "🌟 Rejoice, valiant %s! You stand at the threshold of spectral wonders, and the Positive Trick unveils its radiant magic before you. As ethereal light dances around, a joyous laughter echoes through the corridors. Navigating through uplifting illusions and delightful spectacles, you've emerged triumphant. %d points in the ghostly ledger stand as a testament to your positivity. Well done, adventurer!"
+    "🌟 Greetings, seeker of joy, %s! The Positive Trick beckons, a celebration of light and laughter that brightens the very fabric of reality. As you embrace the enchanting illusions and revel in joyous riddles, you've proven your mettle in the unseen game. Points in the ghostly ledger, totaling %d, acknowledge your resilience and courage in this joyful spectral encounter."
+    "🌟 Oh, daring %s! The Positive Trick, a sprite of delightful whimsy, weaves illusions of light around you. Joyful laughter resonates, and as you navigate through the unseen game, %d points are added to the ghostly ledger—a reward for embracing the positivity of the spectral unknown."
+    "🌟 Hark, valiant %s! Beyond the virtual door, the Positive Trick reveals its celebratory nature. Illusions shimmer with joy, and uplifting riddles resonate with positivity. In your encounter with the unseen game, %d points are added to the ghostly ledger, marking the brighter path you've tread."
+    "🌟 Greetings, seeker of joy, %s! The Positive Trick, in its jubilant revelry, bestows upon you a heartwarming memory. As light dances with cheer and joyous riddles uplift your spirit, %d points are added to the ghostly ledger. A lesson learned in the dance of joy and positive tricks."
+    "🌟 Behold, brave %s! Alas, the Positive Trick has played its hand, weaving illusions of light around you. Laughter echoes in celebration, and as you navigate through the unseen game, %d points are added to the ghostly ledger—a mark of the positivity that illuminates your journey."
+    "🌟 Noble %s, as you reach for the spectral door, the Positive Trick reveals its uplifting side. Light dances with joy, and joyous riddles resonate in the air. In your encounter with the unseen game, %d points are added to the ghostly ledger—a reward for embracing the positivity of the spectral unknown."
+    "🌟 Greetings, seeker of joy, %s! Alas, the Positive Trick has chosen a brighter path. Illusions shimmer with light, and joyous riddles resonate in the corridors. In your encounter with the unseen game, %d points are added to the ghostly ledger, marking the positivity that brightens your journey."
+    "🌟 Valiant %s, as you stand before the virtual door, the Positive Trick unveils its jubilant nature. Light dances with cheer, and joyous riddles uplift your spirit. In your encounter with the unseen game, %d points are added to the ghostly ledger—a lesson learned in the dance of joy."
+    "🌟 Rejoice, daring %s! The Positive Trick, a sprite of delightful whimsy, reveals its celebratory nature. Light dances with cheer, and as you navigate through the unseen game, %d points are added to the ghostly ledger. A mark of the brighter path chosen in the spectral unknown."
+)}}
+{{$trickDouble := (cslice 
+    "🔀 Greetings, %s! The Double Trick, a conjurer of spectral multiplication, now amplifies your spectral ledger. With a surge of otherworldly energy, your points undergo a doubling enchantment. Watch as your points multiply in the mystical dance of the Double Trick. Enjoy the spectral abundance!"
+    "🔀 Behold, noble %s! The Double Trick, a weaver of spectral multiplication, extends its influence to your ghostly ledger. With a mystical incantation, your points undergo a transformation—doubling in magnitude. The symphony of the Double Trick adds a touch of abundance to your spectral journey. Enjoy the multiplication!"
+    "🔀 Valiant %s, the Double Trick beckons, a sorcerer of point amplification. As you embrace the mystical energies, your points undergo a cosmic multiplication. Witness the magical abundance as your points double in the dance of the Double Trick. Enjoy the amplified journey!"
+    "🔀 Greetings, seeker of mysteries, %s! The Double Trick, a maestro of spectral multiplication, now reveals its magic upon your ghostly ledger. With a cosmic surge, your points undergo a transformation—doubling in magnitude. Embrace the enchantment of abundance in your spectral journey!"
+    "🔀 Noble %s, the Double Trick, a conjurer of spectral multiplication, now graces your spectral ledger. With a mystical incantation, your points undergo a doubling transformation. The dance of the Double Trick adds a touch of magical abundance to your spectral journey. Enjoy the symphony of multiplication!"
+    "🔀 Greetings, %s! The Double Trick, a conductor of spectral multiplication, now plays its symphony upon your ghostly ledger. With a flicker of otherworldly energy, your points undergo a magical doubling. Embrace the mystical dance of abundance in your spectral journey!"
+    "🔀 Oh, daring %s! The Double Trick, a sculptor of spectral energies, extends its influence to your spectral ledger. With a surge of ethereal magic, your points undergo a doubling enchantment. Witness the magical abundance as your points multiply in the dance of the Double Trick. Enjoy the amplified journey!"
+    "🔀 Greetings, seeker of mysteries, %s! The Double Trick, a master of spectral multiplication, now reveals its magic upon your ghostly ledger. With a cosmic surge, your points undergo a transformation—doubling in magnitude. Embrace the enchantment of abundance in your spectral journey!"
+    "🔀 Behold, brave %s! The Double Trick, a conjurer of spectral multiplication, now graces your spectral ledger. With a mystical incantation, your points undergo a doubling transformation. Enjoy the dance of magical abundance in your mystical spectral journey!"
+    "🔀 Noble %s, the Double Trick beckons, a maestro of spectral multiplication. As you embrace the mystical energies, your points undergo a cosmic doubling. Witness the magical abundance as your points double in the dance of the Double Trick. Enjoy the multiplied journey!"
+)}}
+{{$trickSteal := (cslice 
+    "💀 Shadowy whispers swirl around you, %s, as the Trickster's hand reaches into the spectral void. With a devilish grin, you swipe %d spooky points from %s, leaving them none the wiser. Your ghostly ledger grows as theirs fades."
+    "💀 Beware, brave %s! The Trickster stirs the air, and with a flash of mischief, you pluck %d spooky points from %s. The shadows hide your deed, and your ghostly fortune flourishes at their expense."
+    "💀 %s, the spirits grin in approval as you enact the Trickster's will. With deft hands, you rob %d spooky points from the unsuspecting %s. Your ledger swells as their fortune diminishes in the dark."
+    "💀 A dark grin spreads across your face, %s. The Trickster’s magic fills the air as you stealthily steal %d spooky points from %s. The shadows conceal your crime, adding to your ghostly hoard while theirs shrinks."
+)}}
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{$data.Set "treat" $treat}}
+{{$data.Set "haunt" $haunt}}
+{{$data.Set "negTrick" $negTrick}}
+{{$data.Set "negTrickMute" $negTrickMute}}
+{{$data.Set "posTrick" $posTrick}}
+{{$data.Set "trickDouble" $trickDouble}}
+{{$data.Set "trickSteal" $trickSteal}}
+{{dbSet 0 "hal" $data}}Added Data2

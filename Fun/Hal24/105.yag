@@ -1,0 +1,210 @@
+Trigger: Regex: ;(start|inv(entory)?|profile|shop|buy|sect|quest|tot|explore|pets?|haunt|p)
+
+{{$trig := lower .Cmd}}
+{{$data := or (dbGet 0 "hal").Value sdict}}{{if not $data}}{{return}}{{end}}
+{{if eq $trig ";start"}}{{return}}
+	{{if (dbGet .User.ID "hal").Value}}{{deleteMessage nil (sendMessageRetID nil (print .User.Mention "| It seems you’re already on your mystical journey in the haunted realms. Prepare to continue your adventure with new challenges and opportunities!")) 5}}{{deleteTrigger 1}}{{return}}{{end}}
+	{{$sect := index (cslice "Phantom Lotus" "Infernal Pumpkin" | shuffle) 0}}
+	{{if $x := (dbGet 0 "hal_sect").Value}}
+		{{$p := or ($x.Get "Phantom Lotus") 0}}
+		{{$i := or ($x.Get "Infernal Pumpkin") 0}}
+		{{$diff := sub $p $i | abs | toInt}}
+		{{if ge $diff 2}}
+			{{if ge $p $i}}
+				{{$sect = "Infernal Pumpkin"}}
+				{{$x.Set "Infernal Pumpkin" (add $i 1)}}
+			{{else}}
+				{{$sect = "Phantom Lotus"}}
+				{{$x.Set "Phantom Lotus" (add $p 1)}}
+			{{end}}
+		{{else}}
+			{{if eq $sect "Infernal Pumpkin"}}
+				{{$x.Set "Infernal Pumpkin" (add $i 1)}}
+			{{else}}
+				{{$x.Set "Phantom Lotus" (add $p 1)}}
+			{{end}}
+			{{dbSet 0 "hal_sect" $x}}
+		{{end}}
+	{{else}}
+		{{dbSet 0 "hal_sect" (sdict $sect 1)}}
+	{{end}}
+	{{sendMessage nil (cembed "description" (print "🎃 Welcome to the Haunted Halloween Adventure, " .User.Mention "! 👻\n\nYou’ve stepped into a world of spooky surprises and eerie quests. Your Halloween journey begins now—get ready to face ghostly trials and uncover dark treasures!"))}}
+	{{dbSet .User.ID "hal" (sdict "sPoints" 100 "sect" $sect "explored" 0 "tricked" 0 "exploredWR" 0 "mKills" 0 "mbKills" 0 "bKills" 0 "equip" (cslice) "items" (sdict) "pet" "")}}
+	{{$data.Set "uList" ((or ($data.uList) cslice).Append .User.ID)}}
+	{{dbSet 0 "hal" $data}}
+{{else if eq $trig ";inv" ";inventory"}}
+	{{$user := .User}}{{if .Message.Mentions}}{{$user = index .Message.Mentions 0}}{{end}}
+	{{$desc := ""}}
+	{{$uData := (dbGet $user.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " $user.String " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{return}}{{end}}
+	{{$inv := or $uData.items sdict}}
+	{{range $k, $v := $inv}}{{- if le $v 0}}{{- $inv.Del $k}}{{- end}}{{- $desc = printf "%s%-13s - %d\n" $desc $k $v}}{{end}}
+	{{$embed := cembed
+      "title" "🎒 Spectral Inventory"
+      "thumbnail" (sdict "url" ($user.AvatarURL "2048"))
+      "footer" (sdict "text" (print "requested by " (or .Member.Nick .User.Username)))
+      "timestamp" currentTime
+      "description" (printf "Here is spectral inventory of %s.\nExplore the otherworldly items you've collected on your haunting journey``\x60%s``\x60" $user.Mention (or $desc "got nothing..."))
+      "color" 0x663399}}
+	{{$uData.Set "items" $inv}}{{dbSet $user.ID "hal" $uData}}
+	{{sendMessage nil $embed}}
+{{else if eq $trig ";pets" ";pet"}}
+	{{$out := ""}}
+	{{range $data.pets}}
+		{{- $out = printf "%sName: **%s**\nDescription: _%s_\n\n" $out .name .effect}}
+	{{end}}
+	{{sendMessage nil (complexMessage "embed" (cembed "title" "Pets info" "description" $out "color" 0x63C328) "buttons" (cbutton "label" "Show my pet" "custom_id" (print "hal_pet_" .User.ID) "style" 0x3))}}
+{{else if eq $trig ";profile" ";p"}}
+	{{$user := .User}}{{if .Message.Mentions}}{{$user = index .Message.Mentions 0}}{{end}}
+	{{$uData := (dbGet $user.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " $user.Mention " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{return}}{{end}}
+	{{$equip := "None"}}
+	{{$realm := dict 1 "The Shifting Sands of Time" 2 "The Whispering Woods of Echoing Shadows" 3 "The Cursed Citadel of Shadows" 4 "The Frozen Abyss of Eternal Winter" 5 "The Twisted Marsh of Lost Souls"}}
+	{{with $uData.equip}}{{$equip = print "\n- " (joinStr "\n- " .)}}{{end}}
+	{{sendMessage nil (cembed "title" (print $user.Username "'s Profile") "color" 0xEB9853 "thumbnail" (sdict "url" ($user.AvatarURL "1024")) "description" (printf "Spooky Points: %s 🎃\n\nFaction: %s\n-# check details with ;sect\n\nArea: %s\n-# check details with ;adv\n\nQuest completed : %d/3\n-# check details with ;quest\n\nMobs defeated: %d\nMini Boss Defeated: %d\nBoss Damage: %s\n\nItems: %s\n\nAfflictions and Boons: \n- %s\n-# check <#997263718826123354> pins\n\nPet owned: %s\n-#	 Check pets by `;pets`" (humanizeThousands $uData.sPoints) $uData.sect (or ($realm.Get $uData.realm) "NA") (len (or $uData.equip cslice)) $uData.mKills $uData.mbKills (humanizeThousands $uData.bKills) $equip (or (joinStr "\n- " $uData.perks) "NA") (or $uData.pet "None")) "footer" (sdict "text" (print "Requested by " (or .Member.Nick .User.Username))))}}
+{{else if eq $trig ";shop"}}{{return}}
+	{{$d := false}}{{if reFind `-d` .StrippedMsg}}{{$d = true}}{{end}}{{$desc := ""}}
+	{{range $k, $v := $data.items}}
+		{{if not $d}}
+			{{- $desc = printf "%s**%s**\n**Price** : `%s` spooky points.\n-# **Command** : `;buy %s amount`\n\n" $desc $v.name (humanizeThousands $v.price) $v.id}}
+		{{else}}
+			{{- $desc = printf "%s**%s** : %s\n**Price** : `%s` spooky points.\n-# **Command** : `;buy %s amount`\n\n" $desc $v.name $v.desc (humanizeThousands $v.price) $v.id}}
+		{{end}}
+	{{end}}
+	{{if not $desc}}Something went wrong :/{{return}}{{end}}
+	{{$embed := sdict "title" "🎃 Spooky Emporium - Haunting Supplies" "description" (print "Welcome to the Spooky Emporium, where ghostly treasures await on your haunting journey. Explore our eerie offerings below:\n\n" $desc) "color" 0xFF8C00}}
+	{{if not $d}}{{$embed.Set "footer" (sdict "text" "use ;shop -d for detailed mode")}}{{end}}
+	{{sendMessage nil (cembed $embed)}}
+{{else if eq $trig ";buy"}}{{return}}
+	{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " .User.Mention " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{return}}{{end}}
+	{{$args := parseArgs 1 ";buy name amount" (carg "string" "item") (carg "int" "amount" 1 1000)}}
+	{{$amount := 1}}{{if $args.IsSet 1}}{{$amount = $args.Get 1}}{{end}}
+	{{$name := ($args.Get 0 | lower)}}{{$isAvl := false}}{{$itemPrice := 0}}
+	{{if eq $name "treat"}}{{$name = "treat_card"}}{{end}}
+	{{if eq $name "trick"}}{{$name = "trick_card"}}{{end}}
+	{{if eq $name "reversal"}}{{$name = "reversal_card"}}{{end}}
+	{{if eq $name "mbait" "mboss" "bait"}}{{$name = "mboss_bait"}}{{end}}
+	{{if eq $name "boost1"}}{{$name = "xp_boost1"}}{{end}}
+	{{if eq $name "boost2"}}{{$name = "xp_boost2"}}{{end}}
+	{{if eq $name "boost3"}}{{$name = "xp_boost3"}}{{end}}
+	{{if eq $name "xp"}}{{$name = "xp_points"}}{{end}}
+	{{range $data.items}}{{- if eq $name .id}}{{- $isAvl = true}}{{- $itemPrice = .price}}{{- break}}{{- end}}{{end}}
+	{{if not $isAvl}}Pls check the command and try again...{{return}}{{end}}
+	{{if le $amount 0}}nice try...{{return}}{{end}}
+	{{if lt $uData.sPoints (mult $amount $itemPrice)}}you dont have enough spooky points..{{return}}{{end}}
+	{{if and (eq $name "xp_points") ($xpCD := (dbGet .User.ID "xpShopCD"))}}
+		{{sendMessage nil (printf "⌛ Greetings, %s! The mystical energies of the spectral realm resonate with your desire to acquire the coveted item. However, the ethereal forces whisper a message of patience. The spectral market is currently in a state of repose, and the item you seek is undergoing a brief period of rejuvenation. Fear not, brave adventurer, for the cooldown period remains till <t:%d:R>. Embrace the shadows and await the opportune moment when the cosmic energies align once more. May your spectral journey be filled with anticipation and enchanted moments!" .User.Mention $xpCD.ExpiresAt.Unix)}}{{return}}
+	{{end}}
+	{{if and (eq $name "xp_points") (gt $amount 1)}}
+	{{sendMessage nil (printf "🛍️ Greetings, %s! As you tread the spectral marketplace, the ethereal whispers guide your choices. However, the mystical forces decree that the coveted item may only be acquired **one at a time**. The cosmic balance demands a measured approach to the spectral treasures. Embrace the wisdom of moderation, noble adventurer, as you navigate the enigmatic offerings of the spectral bazaar. May your acquisitions be as balanced as the dance of shadows in the spectral realm!" .User.Mention)}}{{return}}
+	{{end}}
+	{{if eq $name "xp_points"}}
+		{{dbSetExpire .User.ID "xpShopCD" 1 17280}}
+	{{end}}
+	{{if $uData.items.HasKey $name}}
+		{{$uData.items.Set $name (add ($uData.items.Get $name) $amount)}}
+	{{else}}
+		{{$uData.items.Set $name $amount}}
+	{{end}}
+	{{$uData.Set "sPoints" (sub $uData.sPoints (mult $amount $itemPrice))}}
+	{{sendMessage nil (print  "🎉 Congratulations, " .User.Mention "! You've successfully purchased " $amount " " $name "(s). May these items aid you in your spectral endeavors!")}}
+	{{dbSet .User.ID "hal" $uData}}
+{{else if eq $trig ";sect"}}event ended :D {{return}}
+	{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " .User.Mention " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{return}}{{end}}
+	{{$pls := `# ***Phantom Lotus Sect***
+- **Ghostly Strike (mob)**: Small chance to get 50% more spooky points from mobs.
+- **Specter’s Insight (miniboss)**: Increases item drop rates by 10% after a miniboss is defeated.
+- **Wraith’s Touch (boss)**: After every 3 hits (fourth hit), deal 15% more damage to the boss..
+- **Phantom Explorer (explore)**: 10% extra chance to discover rare items in exploration.`}}
+	{{$ips := `# ***Infernal Pumpkin Sect***
+- **Pumpkin's Fury (mob)**: Small chance to get double spooky points from the mobs.
+- **Pumpkin’s Resilience (miniboss)**: Every player (from Infernal Pumpkin sect) involved in defeating a miniboss gets a 10% of all player involved in miniboss spooky point as reward + their reward.
+- **Infernal Might (boss)**: 5% stacking damage boost per 5 hits (up to 20%).
+- **Blaze of glory (explore)**: Enhances your exploration luck, giving you a 10% better chance to discover rare items!`}}
+	{{$out := ""}}{{if eq $uData.sect "Infernal Pumpkin"}}{{$out = $ips}}{{else}}{{$out = $pls}}{{end}}
+	{{sendMessage nil (cembed "title" "Sect's information" "description" $out "footer" (sdict "text" "These will take affect after finishing quests!"))}}
+{{else if eq $trig ";quest"}}event ended :D {{return}}
+	{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " .User.String " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{deleteTrigger 2}}{{return}}{{end}}
+	{{$out := "NA"}}
+	{{if eq $uData.sect "Phantom Lotus"}}
+		{{$out = printf "1. **Whispers in the shadows:** Discover 10 rare items in the explore.\n-# Progress %d/10\n2. **Echoes of the past:** Defeat ~~250~~ 100 mobs\n-# Progress %d/100\n3. **Blade of the Wraith:** Defeat 50 miniboss\n-# Progress %d/50" $uData.exploredWR $uData.mKills $uData.mbKills}}
+	{{else if eq $uData.sect "Infernal Pumpkin"}}
+		{{$out = printf "1. **Harvest of Tricks:** Steal spooky points from 10 different players during Trick encounters.\n-# Progress %d/10\n2. **Treasure in the Flames:** Explore 5 different areas and find hidden treasures\n-# Progress %d/5\n3. **Fury of the Pumpkin:** Defeat 50 miniboss\n-# Progress %d/50" $uData.tricked $uData.exploredWR $uData.mbKills}}
+	{{end}}
+	{{sendMessage nil (complexMessage "embed" (cembed "title" (print .User.String "'s quests") "description" $out) "buttons" (cbutton "label" "Claim rewards" "custom_id" (print "hal_claim_" .User.ID) "style" 0x1))}}
+{{else if eq $trig ";tot"}}event ended :D {{return}}
+	{{if $cd := dbGet .User.ID "totCD"}}
+		{{try}}
+			{{print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>, If you haven't picked it, try it [here](<" (getMessage $cd.Value.cID $cd.Value.mID).Link ">)."}}
+		{{catch}}
+			{{print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>"}}
+		{{end}}{{return}}
+	{{else}}
+		{{$mID := sendMessageRetID nil (complexMessage "embed" (cembed "title" "🎃 Trick or Treat Encounter! 🎃" "description" (print "Beyond the virtual door lies a realm of unknowns. Choose your fate wisely") "footer" (sdict "text" (print .User.ID " | " (or .Member.Nick .User.Username))) "color" 0xFFA500 "thumbnail" (sdict "url" (or (.Member.AvatarURL "1024") (.User.AvatarURL "1024")))) "buttons" (cslice (cbutton "label" "Trick" "custom_id" (print "hal_trick_" .User.ID)) (cbutton "label" "Treat" "custom_id" (print "hal_treat_" .User.ID))))}}
+		{{dbSetExpire .User.ID "totCD" (sdict "mID" $mID "cID" .Channel.ID) 300}}
+	{{end}}
+{{else if eq $trig ";explore"}}event ended :D {{return}}
+	{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " .User.String " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{deleteTrigger 2}}{{return}}{{end}}
+	{{if $cd := dbGet .User.ID "exploreCD"}}
+		{{try}}
+			{{print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>, If you haven't picked it, try it [here](<" (getMessage $cd.Value.cID $cd.Value.mID).Link ">)."}}
+		{{catch}}
+			{{print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>"}}
+		{{end}}{{return}}
+	{{else}}
+		{{$sceneName := (print "scenario" (randInt 1 9))}}
+		{{$scene := $data.explore.Get $sceneName}}
+		{{$butts := cslice}}
+		{{range $scene.options}}
+			{{- $butts = $butts.Append (cbutton "label" .choice "custom_id" (print "hal_explore_" $.User.ID "_" $sceneName "_" .id) "style" 03)}}
+		{{end}}
+		{{$mID := sendMessageRetID nil (complexMessage "embed" (cembed "title" (index (cslice "🌌 Enchanted Exploration: Choose Your Fate!" "🎃 Halloween Adventure Awaits!" "🔮 Mystical Journeys: What Will You Discover?" "🌕 Pathways of Peril: Your Choice Matters!" "🕷️ The Quest for Spooky Treasures Begins!" "💀 Unearth the Secrets of the Haunted Realm!" "🦇 Haunted Choices: What Will You Uncover?" "⚰️ The Great Halloween Expedition: Choose Wisely!" "🪦 Pathways to Adventure: The Haunted Choices!" "🏰 Explore the Unknown: A Halloween Quest!" | shuffle) 0) "description" (printf (or $scene.desc "%s ... something went wrong..\nyou can explore again now..") .User.String) "color" 0xF4831B "thumbnail" (sdict "url" (.User.AvatarURL "1024"))) "buttons" $butts)}}
+		{{if not $scene.desc}}{{return}}{{end}}
+		{{dbSetExpire .User.ID "exploreCD" (sdict "mID" $mID "cID" .Channel.ID) 300}}
+	{{end}}
+{{else if eq $trig ";haunt"}}event ended :D{{return}}
+	{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " .User.String " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{deleteTrigger 2}}{{return}}{{end}}
+	{{if $cd := dbGet .User.ID "hauntCD"}}
+		{{sendMessage nil (complexMessage "content" (print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>") "reply" .Message.ID)}}
+		{{return}}
+	{{end}}
+	{{$user := .User}}{{if .Message.Mentions}}{{$user = index .Message.Mentions 0}}{{end}}
+	{{$uData := (dbGet $user.ID "hal").Value}}{{if not $uData}}{{deleteMessage nil (sendMessageRetID nil (print "🕷️ Oops! It Looks Like " $user.Mention " Is Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world.")) 5}}{{return}}{{end}}
+	{{$aData := (dbGet .User.ID "hal").Value}}
+	{{$print := ""}}
+	{{$result := randInt 3}}
+	{{$gain := randInt 1 1000}}
+	{{if eq .User.ID $user.ID}}
+		{{if eq 0 (randInt 2)}}
+	    	{{$print = printf "👻 In the eerie solitude of the spectral realm, behold! %s, driven by an insatiable curiosity, attempted to conjure a haunting upon themselves. The shadows stirred with anticipation, but alas, no spectral revelation unfolded. A tale of self-ghosting, where the darkness echoes with the silence of a ghostly whim." .User.Mention}}
+		{{else}}
+			{{$print = printf (print "%[1]s" (index (shuffle $data.haunt.self_win) 0) "\n\nwon %[3]d points") $print .User.Mention $gain}}
+			{{$uData.Set "sPoints" (add $gain (or $uData.sPoints 0))}}
+		{{end}}
+	{{else if eq $result 0}}{{/*win*/}}
+		{{$print = printf (print "%[1]s" (index (shuffle $data.haunt.win) 0) "\n\nwon %[4]d points...") $print .User.Mention $user.Mention $gain}}
+		{{$aData.Set "sPoints" (add $gain (or $aData.sPoints 0))}}
+		{{$uData.Set "sPoints" (add (mult -1 $gain) (or $uData.sPoints 0))}}
+		{{- if eq (or $aData.realm 1) 3}}
+			{{- $award := or ($aData.Get "The Cursed Citadel of Shadows") sdict}}
+			{{- $award.Set "haunt" (add 1 (or $award.haunt 0))}}
+			{{- $aData.Set "The Cursed Citadel of Shadows" $award}}
+		{{- end}}
+	{{else if eq $result 1}}{{/*lose*/}}
+		{{$print = printf (print "%[1]s" (index (shuffle $data.haunt.lose) 0) "\n\nlost %[4]d points...") $print .User.Mention $user.Mention $gain}}
+		{{$uData.Set "sPoints" (add $gain (or $uData.sPoints 0))}}
+		{{$aData.Set "sPoints" (add (mult -1 $gain) (or $aData.sPoints 0))}}
+	{{else}}{{/*draw*/}}
+		{{if eq 0 (randInt 2 | toInt)}}
+			{{$print = printf (print "%[1]s" (index (shuffle $data.haunt.draw) 0) "\n\nboth lost %[4]d points...") $print .User.Mention $user.Mention $gain}}
+			{{$aData.Set "sPoints" (add (mult -1 $gain) (or $aData.sPoints 0))}}
+			{{$uData.Set "sPoints" (add (mult -1 $gain) (or $uData.sPoints 0))}}
+		{{else}}
+			{{$print = printf (print "%[1]s" (index (shuffle $data.haunt.draw_win) 0) "\n\nboth won %[4]d points...") $print .User.Mention $user.Mention $gain}}
+			{{$uData.Set "sPoints" (add $gain (or $uData.sPoints 0))}}
+			{{$aData.Set "sPoints" (add $gain (or $aData.sPoints 0))}}
+		{{end}}
+	{{end}}
+	{{sendMessage nil (cembed "title" "👻 Unveiling the Haunting Drama 👻" "thumbnail" (sdict "url" .Server.IconURL) "color" 0xFFA500 "description" $print)}}
+	{{dbSetExpire .User.ID "hauntCD" 1 300}}
+	{{dbSet .User.ID "hal" $aData}}
+	{{dbSet $user.ID "hal" $uData}}
+{{end}}

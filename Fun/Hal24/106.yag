@@ -1,0 +1,39 @@
+Trigger: Regex: \A
+{{$data := (dbGet 0 "hal").Value }}
+{{$uData := (dbGet .User.ID "hal").Value}}
+{{if and (ge (or $uData.realm 0) 3) (ge (or ($uData.Get "The Cursed Citadel of Shadows").haunt 0) 15) (not (or (inFold (or $uData.perks cslice) "Spectral Curse") (inFold (or $uData.perks cslice) "Phantom's Favor")))}}
+	{{$uData.Set "perks" ((or $uData.perks cslice).Append (index (cslice "Phantom's Favor" "Spectral Curse" | shuffle) 0))}}
+	{{dbSet .User.ID "hal" $uData}}
+{{end}}
+{{if and (ge (or $uData.realm 0) 5) (ge (or ($uData.Get "The Twisted Marsh of Lost Souls").event 0) 5) (not (or (inFold (or $uData.perks cslice) "Spirit's Favor") (inFold (or $uData.perks cslice) "Weakened Essence")))}}
+	{{$uData.Set "perks" ((or $uData.perks cslice).Append (index (cslice "Weakened Essence" "Spirit's Favor" | shuffle) 0))}}
+	{{dbSet .User.ID "hal" $uData}}
+{{end}}
+{{if not $data}}{{return}}{{end}}
+{{$spawn := 997263718826123354}}
+{{if eq (randInt 10) 1 5}}{{/*45 chance 300 cd*/}}
+	{{$cd := 30}}
+	{{if (dbGet $spawn "halMobs")}}{{return}}{{end}}{{$mob := index (shuffle $data.mobs) 0}}
+	{{sendMessage $spawn (complexMessage "embed" (cembed "title" (printf "👻 A wild %s appeared!" $mob.name) "description" (printf "Beware, brave adventurer! The spectral realm stirs as a mysterious presence materializes. A %s emerges from the shadows, ready to challenge your courage.\n\n%s\n\n Approach with caution and prepare for a spectral encounter! ⚔️ Fight it to earn spooky points!" $mob.name $mob.desc) "thumbnail" (sdict "url" $mob.image) "color" 0x9932CC "footer" (sdict "text" "Spectral Encounter")) "buttons" (cbutton "label" "⚔️ Attack" "custom_id" "hal_mobs" "style" 0x4))}}
+	{{dbSetExpire $spawn "halMobs" 1 $cd}}
+{{end}}
+{{if eq (randInt 70) 1 30}}{{/*75 change 600 cd*/}}
+	{{$cd := 600}}
+	{{if (dbGet $spawn "halMiniboss")}}{{return}}{{end}}{{$mboss := index (shuffle $data.miniboss) 0}}
+	{{$mID := sendMessageNoEscapeRetID $spawn (complexMessage "content" "👻 Attention <@&1164215848714649622>! \nThe spectral realm stirs with activity. A new Halloween mini-boss has appeared! 🎃🌙" "embed" (cembed "title" (printf "👻 A wild %s appeared!" $mboss.name) "description" (printf "Beware, brave adventurer! The spectral realm stirs as a mysterious presence materializes. A %s emerges from the shadows, ready to challenge your courage.\n\n%s\n\n Approach with caution and prepare for a spectral encounter! ⚔️ Fight it to earn spooky points!" $mboss.name $mboss.desc) "thumbnail" (sdict "url" $mboss.image) "color" 0x9932CC "footer" (sdict "text" "⌛ Spectral Encounter | use ;role hal to add/remove ping role")) "buttons" (cbutton "label" "⚔️ Attack" "custom_id" "hal_miniboss" "style" 0x4))}}
+	{{dbSetExpire $spawn "halMiniboss" 1 $cd}}
+	{{execCC 108 $spawn (div $cd 10 | toInt) (sdict "key" "hal_miniboss" "mID" $mID "cID" $spawn "name" $mboss.name)}} 
+{{end}}
+{{$chan := 997263718826123354}}
+{{$uData := (dbGet .User.ID "hal").Value}}{{if not $uData}}{{return}}{{end}}
+{{$area := or ($uData.Get "The Twisted Marsh of Lost Souls") sdict}}
+{{if and (eq .Channel.ID $chan 1297266604798771201) (le (or $area.event 0) 4) (eq (randInt 20) 1 2 3 4 5) (eq (or $uData.realm 1) 5)}}{{/* 1/20 chance, realm 5 */}} {{$chan = .Channel.ID}}
+	{{if (dbGet .User.ID "halSurvive")}}{{return}}{{end}}
+	{{$butts := cslice}}{{$cd := 300}}
+	{{range seq 0 26}}
+		{{- $butts = $butts.Append (cbutton "label" "🕸️" "custom_id" (print "hal_survive_" $.User.ID "_" .) "style" (index (cslice 0x1 0x2 0x3 0x4 |shuffle) 0))}}
+	{{end}}
+	{{$mID := sendMessageNoEscapeRetID $chan (complexMessage "content" .User.Mention "embed" (cembed "thumbnail" (sdict "url" (.User.AvatarURL "1024")) "color" 0xff0000 "description" "You find yourself sinking deeper into the marsh, the thick, swampy ground pulling at your feet like cold, grasping hands. The fog around you thickens, and eerie whispers seem to echo from the shadows. Time is running out—if you don’t act quickly, you’ll be lost in the cursed swamp forever.\n\nMultiple paths lie before you, but only one will lead you to safety. Choose wisely… or the marsh may claim you as its next lost soul.\n\nClick one of the buttons to make your choice, but beware—some paths may only drag you deeper into the mire.") "buttons" (shuffle $butts))}}
+	{{dbSetExpire .User.ID "halSurvive" (sdict "key" "hal_survive" "uID" .User.ID "mID" $mID "cID" $chan) $cd}}
+	{{execCC 108 $chan $cd (sdict "key" "hal_survive" "uID" .User.ID "mID" $mID "cID" $chan)}} 
+{{end}}

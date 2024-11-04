@@ -1,0 +1,261 @@
+trigger: message component: hal_
+{{$uData := (dbGet .User.ID "hal").Value}}{{$mod := 1212083129012064268}}
+{{if not $uData}}{{sendResponse nil (complexMessage "content" "🕷️ Oops! It Looks Like You’re Not Yet Registered... 👻\n\n📝 To Register: Use the `;start` command to create your account and step into the Halloween world." "ephemeral" true)}}{{return}}{{end}}
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{if reFind `^hal_discplay_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$area := $data.delve.Get (index $dataButt 3)}}
+	{{$chosen := (index $dataButt 4) | toInt}}
+	{{$stepNo := (index $dataButt 6)}}
+	{{$cArea := $area.Get (print "step_" $stepNo)}}
+	{{/* check if message is too old to stop player */}}
+	{{range $cArea.choices}}{{if eq $chosen .option}}{{$chosen = .}}{{break}}{{end}}{{end}}
+	{{$embed := index .Message.Embeds 0 | structToSdict}}{{$out := ""}}{{$butts := cslice}}
+	{{if $chosen.correct}}
+		{{$out = print $chosen.response "\n\n"}}
+		{{$nArea := $area.Get (print "step_" (add 1 $stepNo))}}
+		{{if $cArea.reward}}
+			{{$embed.Set "description" (print $out "Got `" (title $cArea.reward) "`")}}
+			{{$uRealm := $data.realms.Get (print "realm_" (or $uData.realm 1))}}
+			{{$award := or ($uData.Get $uRealm.name) sdict}}
+			{{$award.Set "discover" 1}}
+			{{$uData.Set $uRealm.name $award}}
+			{{if $cArea.img}}{{$embed.Set "image" (sdict "url" $cArea.img)}}{{end}}
+			{{updateMessage (cembed $embed)}}
+			{{dbSet .User.ID "hal" $uData}}
+			{{return}}
+		{{else}}
+			{{$out = print $out $nArea.clue "\n\n"}}
+			{{range (shuffle $nArea.choices)}}
+				{{- $butts = $butts.Append (cbutton "label" .label "custom_id" (print "hal_discplay_" $.User.ID "_" (index $dataButt 3) "_" .option "_" "step_" (add 1 $stepNo)) "style" 0x3)}}
+				{{- $out = printf "%s- **%s**: %s\n" $out .label .desc}}
+			{{end}}
+			{{$embed.Set "description" $out}}
+			{{updateMessage (complexMessageEdit "content" .User.Mention "embed" $embed "buttons" $butts)}}
+		{{end}}
+	{{else}}
+		{{$embed.Set "description" (print $chosen.response "\n\ntry again...")}} 
+		{{updateMessage (cembed $embed)}}
+	{{end}}
+{{else if reFind `^hal_disc_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$area := $data.delve.Get (index $dataButt 3)}}
+	{{if eq (index $dataButt 3) "next"}}
+		{{$uRealm := $data.realms.Get (print "realm_" (or $uData.realm 1))}}
+		{{$uProg := or ($uData.Get $uRealm.name) sdict}}
+		{{$out := ""}}{{$next := false}}
+		{{range $uRealm.chal}}
+			{{- if ge (or ($uProg.Get .type) 0) (or .count 1)}}{{$next = true}}{{else}}{{$next = false}}{{break}}{{end}}
+		{{end}}
+		{{if $next}}
+			{{$uData.Set "realm" (add 1 (or $uData.realm 1))}}
+			{{$uData.Set "spectralShard" (add 1 (or $uData.spectralShard 1))}}
+			{{$nRealm := $data.realms.Get (print "realm_" (or $uData.realm 1))}}
+			{{if gt (or $uData.realm 1) 5}}You have reached the end...{{return}}{{end}}
+			{{if not $nRealm}}something went wrong :/{{return}}{{end}}
+			{{$embed := sdict "title" $nRealm.name "color" 0x9B30FF "thumbnail" (sdict "url" $nRealm.img)}}
+			{{$uData.Del $nRealm.name}}
+			{{$out := print $nRealm.desc "\n\n**Challenges:**"}}{{$butts := cslice}}
+			{{$uProg := or ($uData.Get $nRealm.name) sdict}}
+			{{range $nRealm.chal}}
+				{{- $out = printf "%s\n- %s" $out .desc}}
+				{{- if eq .type "explore"}}
+					{{- $butts = $butts.Append (cbutton "label" (printf "Explored %d/1" (or ($uProg.Get .type) 0)) "disabled" true "style" 0x2)}}
+				{{- end}}
+				{{- if eq .type "haunt"}}
+					{{- $butts = $butts.Append (cbutton "label" (printf "Haunted %d/%d" (or ($uProg.Get .type) 0) .count) "disabled" true "style" 0x2)}}
+				{{- end}}
+				{{- if eq .type "event"}}
+					{{- $butts = $butts.Append (cbutton "label" (printf "Survived %d/%d" (or ($uProg.Get .type) 0) .count) "disabled" true "style" 0x2)}}
+				{{- end}}
+				{{- if eq .type "kill"}}
+					{{- $out = printf "%s [Kill %d %s (%s) to get '%s.']" $out .count .kind .name .rewards.reward}}
+					{{- $butts = $butts.Append (cbutton "label" (printf "%s killed (%d/%d)" .name (or ($uProg.Get .type) 0) .count) "disabled" true "style" 0x2)}}
+				{{- end}}
+				{{- if eq .type "discover"}}{{- $dis := false}}
+					{{- $out = printf "%s [Complete the challenge `%s` and find the '%s'.]" $out .name .rewards.reward}}
+					{{- if (($uData.Get $nRealm.name).Get .type)}}{{$dis = true}}{{end}}
+					{{- $butts = $butts.Append (cbutton "label" (print "Explore " (title .name)) "custom_id" (print "hal_disc_" $.User.ID "_" .name) "style" 0x3 "disabled" $dis)}}
+				{{- end -}}
+			{{end}}
+			{{$butts = $butts.Append (cbutton "label" "Next" "custom_id" (print "hal_disc_" .User.ID "_next") "style" 0x3)}}
+			{{$embed.Set "description" $out}}
+			{{updateMessage (complexMessageEdit "embed" $embed "buttons" $butts)}}
+			{{dbSet .User.ID "hal" $uData}}
+		{{else}}
+			{{sendResponse nil (complexMessage "content" (print "You haven't completed all of the requirement for next realm.") "ephemeral" true)}}
+		{{end}}
+		{{return}}
+	{{end}}
+	{{if $cd := dbGet .User.ID "discoverCD"}}
+        {{sendResponse nil (complexMessage "content" (print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>\n\nPlay [here](" $cd.Value.link ")") "reply" .Message.ID "ephemeral" true)}}
+        {{return}}
+    {{end}}
+	{{$nEmbed := sdict "color" 0xae27ff "title" (print "The Veil of Shadows: Realm Delve (" (index $dataButt 3) ")") "thumbnail" (sdict "url" (.User.AvatarURL "1024"))}}{{$butts := cslice}}
+	{{$cArea := $area.Get "step_1"}}{{$out := print $cArea.clue "\n\n"}}
+	{{range (shuffle $cArea.choices)}}
+		{{- $butts = $butts.Append (cbutton "label" .label "custom_id" (print "hal_discplay_" $.User.ID "_" (index $dataButt 3) "_" .option "_" "step_1") "style" 0x3)}}
+		{{- $out = printf "%s- **%s**: %s\n" $out .label .desc}}
+	{{end}}
+	{{$nEmbed.Set "description" $out}}
+    {{$mID := sendResponseRetID nil (complexMessage "content" .User.Mention "embed" $nEmbed "buttons" $butts)}}
+	{{if not $mID}}{{return}}{{end}}
+    {{$link := (getMessage nil $mID).Link}}
+    {{dbSetExpire .User.ID "discoverCD" (sdict "link" $link) 600}}
+{{else if reFind `^hal_abandonForNew_.*` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$pet := index $dataButt 3}}
+	{{range $data.pets}}
+		{{- if eq .name $pet}}{{$pet = .}}{{break}}{{end}}
+	{{end}}
+	{{updateMessage (cembed "title" "🏮 **A New Bond is Formed** 🏮" "description" (print "Name: " $pet.name "\nEffect: " $pet.effect "\n\nAs the ethereal light surrounds you, your current companion steps aside with a knowing look. It's time for a new journey, and your heart embraces the change. The new creature steps forward, full of promise and adventure, ready to enhance your spooky encounters.\n\nWith a final nod, your previous companion fades into the shadows, leaving you with a new partner to guide you on your quest.\n\nMay your new companion bring fortune and mystery! 🌌") "color" 0xFFD700 )}}
+	{{$uData.Set "pet" $pet.name}}
+	{{dbSet .User.ID "hal" $uData}}
+{{else if reFind `^hal_pet_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$pet := ""}}
+	{{range $data.pets}}
+		{{- if eq .name (or $uData.pet "")}}{{$pet = .}}{{end}}
+	{{end}}
+	{{if not $pet}}{{sendResponse nil (complexMessage "content" "You dont have any pet!" "ephemeral" true)}}{{return}}{{end}}
+	{{sendResponse nil (complexMessage "embed" (cembed "title" (print (or .Member.Nick .User.Username) "'s Pet") "description" (print "Name: " $pet.name "\nDescription: " $pet.effect) ) "buttons" (cbutton "label" "Abandon" "custom_id" (print "hal_abandon_" .User.ID) "style" 0x4))}}
+{{else if reFind `^hal_abandon_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{sendResponse nil (complexMessage "embed" (cembed "title" (print (or .Member.Nick .User.Username) "'s Pet") "description" "# Are you sure you want to abandon the pet?") "ephemeral" true "buttons" (cbutton "label" "Confirm" "custom_id" (print "hal_abandonConfirm_" .User.ID) "style" 0x4))}}
+	{{deleteMessage nil .Message.ID 1}}
+{{else if reFind `^hal_abandonConfirm_\d+` .StrippedID}}
+	{{if ge (toInt (currentTime.Sub (snowflakeToTime .Message.ID)).Seconds) 600}}
+		{{sendResponse nil (complexMessage "content" "This message is older than 10m." "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$uData.Del "pet"}}
+	{{dbSet .User.ID "hal" $uData}}
+	{{updateMessage "You have abandoned yout pet!"}}
+{{else if reFind `^hal_abandonCancel_\d+` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$uData := (dbGet $user.User.ID "hal").Value}}{{if not $uData}}{{sendResponse nil (complexMessage "content" "Something went wrong :/" "ephemeral" true)}}{{return}}{{end}}
+	{{$pet := $uData.pet}}
+	{{range $data.pets}}
+		{{- if eq .name (or $uData.pet "")}}{{$pet = .}}{{break}}{{end}}
+	{{end}}
+	{{updateMessage (cembed "title" "🏮 **Loyalty Prevails** 🏮" "description" "As the ethereal light dims, a new creature approaches, filled with ancient energy and excitement. But your current companion steps forward, its eyes full of loyalty and a bond not easily broken.\n\nYou decide to stay with your faithful friend, knowing that your journey together is far from over. The new companion nods in understanding and fades back into the shadows, leaving you to continue your adventures with your trusted partner.\n\nYour loyalty is rewarded as the path ahead remains steady and strong. 🌌" "color" 0x4682B4 )}}
+{{else if reFind `^hal_survive_\d+.*` .StrippedID}}
+	{{$dataButt := split $.StrippedID "_"}}
+	{{$user := getMember (index $dataButt 2)}}
+	{{if ne $user.User.ID .User.ID}}
+		{{sendResponse nil (complexMessage "content" "This is not your button!" "ephemeral" true)}}{{return}}
+	{{end}}
+	{{$bNum := index $dataButt 3}}
+	{{$mData := (dbGet .User.ID "halSurvive").Value}}
+	{{deleteMessage $mData.cID $mData.mID 1}}
+	{{$out := ""}}{{$gain := randInt 10000}}
+	{{if eq (randInt 26) (toInt $bNum)}}
+		{{$out = print "🎉 Against all odds, your instincts guide you to safety! The ground beneath your feet begins to solidify, and you manage to pull yourself free from the marsh’s grasp. The fog lifts as you find a hidden path leading out of the cursed swamp.\n\nYou survive... for now.\n\nYou gained " $gain " Spooky points."}}
+		{{$award := $uData.Get "The Twisted Marsh of Lost Souls"}}
+		{{$award.Set "event" (add 1 (or $award.event 0))}}
+		{{$uData.Set "The Twisted Marsh of Lost Souls" $award}}
+	{{else}}
+		{{$out = print "💀 You feel a sudden chill as your chosen path leads you deeper into the cursed swamp. The marsh tightens its grip, dragging you down into the muck. The whispers grow louder, and the fog swallows you whole. The marsh has claimed another victim.\n\nBetter luck next time…\n\nYou lost " $gain " Spooky points."}}
+		{{$gain = mult -1 $gain}}
+	{{end}}
+	{{$uData.Set "sPoints" (add (or $uData.sPoints 0) $gain)}}
+	{{sendMessage nil (complexMessage "content" .User.Mention "embed" (cembed "description" $out "color" 0xae27ff "thumbnail" (sdict "url" (.User.AvatarURL "1024"))))}}
+	{{dbSet .User.ID "hal" $uData}}
+	{{dbDel .User.ID "halSurvive"}}
+{{else if reFind `^hal_boss` .StrippedID}}
+	{{if $cd := dbGet .User.ID "bossCD"}}
+		{{sendResponse nil (complexMessage "content" (print "⚠️ This command is on cooldown, expiring <t:" $cd.ExpiresAt.Unix ":R>") "ephemeral" true)}}
+		{{return}}
+	{{end}}
+	{{$embed := structToSdict (index .Message.Embeds 0)}}
+	{{$hp := reReplace "," (index (reFindAllSubmatches `HP: (.*)/1,000,000` $embed.Description) 0 1) "" | toInt}}
+	{{$hit := randInt 800 1001}}{{$out := print "With a fierce battle cry, you strike the Pumpkin King! Your blow lands true, sending shockwaves through his twisted form.\n\nHe roars in anger, vines splintering around him as you deal **" $hit "** damage!\n\n"}}
+	{{$uData.Set "bHits" (add 1 (or $uData.bHits 0))}}
+	{{$uData.Set "bKills" (add (or $uData.bKills 0) $hit)}}
+	{{if ge (len (or $uData.equip cslice)) 3}}
+		{{if eq $uData.sect "Infernal Pumpkin"}}
+			{{$stack := min (mult (div $uData.bHits 5) 5) 20}}
+			{{$out = printf "%sYour dedication to the sect (%s) grants you a powerful boon!, dealing **%0.2f%%** (+ %d) extra damage.\n\n" $out $uData.sect $stack (mult (div $stack 100) $hit | toInt)}}
+			{{$hit = add $hit (mult (div $stack 100) $hit) | toInt}}
+		{{else}}
+			{{if eq (mod (or $uData.bHits 1) 4 | toInt) 0}}
+				{{$out = printf "%sYour dedication to the sect (%s) grants you a powerful boon!, dealing **15%%** (+ %d) extra damage.\n\n" $out $uData.sect (mult (div 15.0 100) $hit | toInt)}}
+				{{$hit = add $hit (mult (div 15.0 100) $hit) | toInt}}
+			{{end}}
+		{{end}}
+	{{end}}
+	{{if eq $uData.pet "Ghostly Tiger"}}
+		{{$out = printf "%sYour loyal pet (Ghostly Tiger) joins the fray, unleashing its fury!, dealing **5%%** (+ %d) extra damage.\n\n" $out (mult (div 5.0 100) $hit | toInt)}}
+		{{$hit = add $hit (mult (div 5.0 100) $hit) | toInt}}
+	{{end}}
+	{{if eq $uData.pet "Ancient Dragon"}}
+		{{$out = printf "%sYour loyal pet (Ancient Dragon) joins the fray, unleashing its fury!, dealing **20%%** (+ %d) extra damage.\n\n" $out (mult (div 20.0 100) $hit| toInt)}}
+		{{$hit = add $hit (mult (div 20.0 100) $hit) | toInt}}
+	{{end}}
+	{{if in $uData.perks "Spirit's Favor"}}
+		{{$out = printf "%sThe spirits smile upon you, bestowing their protection and guidance, dealing **20%%** (+ %d) extra damage.\n\n" $out (mult (div 20.0 100) $hit| toInt)}}
+		{{$hit = add $hit (mult (div 20.0 100) $hit) | toInt}}
+	{{end}}
+	{{if in $uData.perks "Weakened Essence"}}
+		{{$out = printf "%sA dark energy seeps into your being, sapping your strength, reducing **15%%** (- %d 💀) damage.\n\n" $out (mult (div 15.0 100) $hit| toInt)}}
+		{{$hit = sub $hit (mult (div 15.0 100) $hit) | toInt}}
+	{{end}}
+	{{$out = print $out "-# You dealt the total damage of **" (humanizeThousands $hit) "**."}}
+	{{$embed.Set "description" (printf "``\x60\nHP: %s/1,000,000``\x60\nIn a forest locked in twilight, the Pumpkin King reigns—a towering figure of twisted vines and glowing orange pumpkins. His carved face shifts from playful to menacing, eyes flickering with a greenish glow that illuminates the misty darkness. Fog swirls along the forest floor, and gnarled trees, adorned with glowing jack-o'-lanterns, stand like skeletal sentries around him. His deep, echoing laughter fills the air as his minions flit about, ready to fulfill his every dark command. Here, the Pumpkin King embodies the spirit of Halloween itself, both guardian and terror of his haunted realm." (humanizeThousands (sub $hp $hit)))}}
+	{{if eq $uData.sect "Phantom Lotus"}}
+		{{$data.Set "sect_PL_dam" (add (or $data.sect_PL_dam 0) $hit)}}
+	{{else}}
+		{{$data.Set "sect_IP_dam" (add (or $data.sect_IP_dam 0) $hit)}}
+	{{end}}
+	{{dbSet .User.ID "hal" $uData}}
+	{{dbSet 0 "hal" $data}}
+	{{dbSetExpire .User.ID "bossCD" 1 300}}
+	{{if le (sub $hp $hit) 0}}
+		{{$lb := "Total damage:\n"}}
+		{{range dbTopEntries "hal" 100 0}}
+			{{- if eq .UserID 0}}{{continue}}{{end}}
+			{{- if le .Value.bKills 0}}{{continue}}{{end}}
+			{{- $lb = printf "%s- <@%d> - %s\n" $lb .UserID (humanizeThousands .Value.bKills)}}
+		{{end}}
+		{{$done := cembed "color" 0xff7418 "thumbnail" (sdict "url" "https://i.vgy.me/FrPRCa.png") "description" (print "With a final blow, the boss collapses, its form dissipating into shadows. The echoes of battle fade, leaving behind only silence and a faint glow where it once stood. Victory is yours!\n\n" $lb)}}
+		{{updateMessage $done}}
+	{{else}}
+        {{sendResponse nil (complexMessage "content" $out "ephemeral" true)}}
+		{{editMessage nil .Message.ID (complexMessageEdit "embed" $embed)}}
+	{{end}}
+	{{sendMessage 1300789431694917684 (complexMessage "content" .User.Mention "embed" (cembed "color" 0xfdfd87 "description" $out))}}
+{{end}}

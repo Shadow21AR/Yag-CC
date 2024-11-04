@@ -1,0 +1,180 @@
+command: add1
+{{ $miniboss :=  ( cslice 
+	(sdict "name" "Bleeding Stone Golem"
+			"desc" "From the cursed heart of an ancient quarry, the Bleeding Stone Golem emerges. Its towering form is sculpted from stones soaked in the blood of long-forgotten rituals. Crimson veins pulse through its stony limbs, and eerie whispers echo from within. The air around it is heavy with the metallic scent of blood. Beware as it awakens, seeking vengeance from the depths of the spectral quarry.\n\n💔 Witness the awakening of the Bleeding Stone Golem! React with⚔️ to face the sentinel carved from cursed stones."
+			"image" "https://cdn.discordapp.com/attachments/1017388310563401758/1164208542631342140/ScaletheCosmos_human-like_emancipated_monster_with_large_red_cr_73a5b957-c3f4-4d4a-a116-a2d77ea30807.png"
+	) (sdict "name" 
+		"Kaliwing, the Haunted Parrot" 
+			"desc" "Kaliwing, a spectral parrot with feathers as dark as the midnight abyss, emerges from the eerie mist. Its wings carry whispers of ghostly squawks, and its eyes gleam with the mysteries of the afterlife. Known to mimic the haunting calls of forgotten spirits, Kali is a cryptic entity with ties to the very essence of Kaliween. Face the enigmatic parrot in a dance between the worlds, where shadowy feathers cast spells of eerie enchantment.\n\n🦜 Kaliwing, the Haunted Parrot, emerges from the spectral mist! React with ⚔️ to unravel the mysterious squawks woven by the ancient parrot of Halloween."
+			"image" "https://media.discordapp.net/attachments/1017388310563401758/1164208543713480874/ScaletheCosmos_white_parrot_in_prom_suit_realistic_cinematic_li_51b5a205-ce0b-4e98-8b4e-7667666e5104.png"
+	) (sdict "name" 
+		"The Gloomwader"
+			"desc" "Emerging from the deepest, murkiest parts of the marsh, The Gloomwader is a towering, hunched figure draped in rotting vines and moss. Its body appears to be part of the swamp itself, with dark, oozing muck trailing behind it. Its long, bony arms stretch out, tipped with gnarled claws that drip with a poisonous substance. Its face is a hollow mask of shadow, with two glowing, sickly green eyes peering out from the void."
+			"image" "https://i.vgy.me/vUW1xm.png"
+	) (sdict "name" 
+		"Phantom Jester of Tricks"
+			"desc" "A mischievous phantom jester with a penchant for playing tricks on unsuspecting souls. Watch out for its unpredictable antics.\n\n🃏 The Phantom Jester of Tricks is here to play! React with⚔️ to challenge the spectral trickster"
+			"image" "https://cdn.discordapp.com/attachments/1017388310563401758/1164208011833790464/Z.png"
+	) (sdict "name" 
+		"Sister of the Veil"
+			"desc" "In the haunted corridors of an ethereal chapel, the Sister of the Blackened Veil manifests. A ghostly nun, her face veiled in black, glides with an otherworldly grace. Wisps of black blood trail behind her, staining the spectral ground. Eerie prayers echo through the chapel as her eyes glow with an otherworldly presence. Beware, for the Sister of the Veil seeks penance in the shadows of the haunted chapel.\n\n⚫ Behold the manifestation of the Sister of the Blackened Veil! React with ⚔️ to confront the ghostly nun veiled in darkness"
+			"image" "https://media.discordapp.net/attachments/1017388310563401758/1164208543071748216/ScaletheCosmos_peasant_ghoul_screams_ghost_face_black_tears_sta_3f396846-d739-4ade-aac9-cdceba8fd788.png"
+	) (sdict "name" 
+		"Sorcerer's Ghostly Apprentice"
+			"desc" "A spectral apprentice to a powerful sorcerer, wielding magical spells and illusions. Beware of its ghostly conjurations.\n\n👻 The Sorcerer's Ghostly Apprentice materializes! React with ⚔️ to challenge the phantom spellcaster."
+			"image" "https://cdn.discordapp.com/attachments/1017388310563401758/1164208748210950224/9k.png"
+	) (sdict "name" 
+		"Shadow Wraith"
+			"desc" "From the depths of the Cursed Citadel, the Shadow Wraith emerges, a swirling mass of darkness and despair. Shrouded in tattered, spectral robes, its hollow eyes glow with a malevolent hunger. Whispers of lost souls echo around it, and the air grows cold as it approaches. Beware, for its very presence drains the light and hope from the surroundings, casting all into a deep, unsettling gloom.\n\n🌌 Face the Shadow Wraith! React with ⚔️ to confront the embodiment of despair lurking within the shadow"
+			"image" "https://i.vgy.me/P6fCHm.png"
+	) (sdict "name" 
+		"Glacial Wraith"
+			"desc" "From the depths of the Frozen Abyss, the Glacial Wraith rises, a haunting figure wreathed in swirling snow and ice. Its ethereal form shimmers with a cold light, and piercing blue eyes glow like frozen sapphires. Legends speak of a spirit trapped within the ice, seeking vengeance against those who dare intrude upon its frozen domain. As it glides through the snow, the air grows frigid, and an unsettling silence envelops the surroundings. Beware, for the Glacial Wraith can freeze the very breath from your lungs, leaving you vulnerable to its chilling embrace.\n\n💧 Confront the Glacial Wraith! Prepare yourself to face the spirit of winter!"
+			"image" "https://i.vgy.me/25iqZn.png"))}}
+{{ $mobs := (cslice
+    (sdict 
+    "desc" "A translucent figure that flickers in and out of existence, the Ghostly Apparition leaves a cold shiver in its wake."
+    "name" "Ghostly Apparition"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165627258275373157/2Q.png"
+    ) (sdict 
+    "desc" "A wailing spirit with a mournful cry, the Eerie Banshee haunts the shadows, warning of impending doom."
+    "name" "Eerie Banshee"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165627784463388862/9k.png"
+    ) (sdict
+    "desc" "A phantom entity that glides silently through the darkness, the Spectral Phantom is a mysterious and ethereal presence."
+    "name" "Spectral Phantom"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165628106174890138/2Q.png"
+    ) (sdict
+    "desc" "Formless entities that lurk in the darkness, the Cursed Shadows manifest as elusive and unsettling specters."
+    "name" "Cursed Shadows"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165628277226995763/2Q.png"
+    ) (sdict
+    "desc" "A restless spirit that roams the haunted grounds, the Haunted Spirit seeks solace in the afterlife and may appear as a flickering light."
+    "name" "Haunted Spirit"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165628481493794886/9k.png"
+    ) (sdict
+    "desc" "A malevolent wraith with a ghastly visage, the Ghastly Wraith is a vengeful spirit that hungers for the souls of the living."
+    "name" "Ghastly Wraith"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165628685878050907/9k.png"
+    ) (sdict
+    "desc" "An ephemeral shade that materializes in the moonlight, the Ephemeral Shade embodies the mysteries of the spectral realm."
+    "name" "Ephemeral Shade"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165629134408515594/9k.png"
+    ) (sdict
+    "desc" "A cryptic apparition with enigmatic features, the Cryptic Apparition is a ghostly entity that eludes understanding."
+    "name" "Cryptic Apparition"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165629433592434751/9k.png"
+    ) (sdict
+    "desc" "A phantom banshee with an otherworldly wail, the Phantom Banshee heralds the arrival of supernatural occurrences."
+    "name" "Phantom Banshee"
+    "image" "https://cdn.discordapp.com/attachments/1017388310563401758/1165629686257299477/2Q.png"
+    ) (sdict
+    "desc" "A spectral guardian of the forest, the Woodland Wraith drifts silently among the trees, watching over the sacred grounds. With glowing green eyes and ethereal limbs, it can manipulate the forest's energy to attack intruders."
+    "name" "Woodland Wraith"
+    "image" "https://i.vgy.me/jCTilm.png"
+    ) (sdict
+    "desc" "A ghostly figure that drifts silently through the dunes, the Sand Wraith is a remnant of a long-lost traveler. Its hollow eyes shimmer like mirages, luring adventurers into the depths of the desert. It whispers ancient secrets, but beware—those who listen too closely may find themselves lost forever in the sands."
+    "name" "Sand Wraith"
+    "image" "https://i.vgy.me/VqCjT2.png"))}}
+{{ $items := (cslice
+    (sdict 
+        "id" "mboss_bait"
+        "desc" "Lure forth a formidable Spectral Beast with this enchanted bait. Be prepared for a challenging encounter that may yield bountiful rewards in XP points and treasures."
+        "name" "Spectral Beast Bait"
+        "price" 4000
+    ) (sdict  
+        "id" "reversal_card"
+        "desc" "Harness the power of karmic reversal with this mystical card. Use it to mirror your actions, experiencing the event of reversal and earning or **losing** spooky points in the process."
+        "name" "Karmic Reversal Card"
+        "price" 10000
+    ) (sdict 
+        "id" "treat_card"
+        "desc" "Indulge in the sweetness of the Enchanted Treat Card. Use it to gift yourself or others a delightful treat, earning bonus Spooky  points and fostering goodwill on your spiritual path."
+        "name" "Enchanted Treat Card"
+        "price" 1500
+    ) (sdict 
+        "id" "trick_card"
+        "desc" "Invoke the Illusory Trickster Card to weave illusions and play tricks on yourself or others. This mysterious card may alter Spooky points and add a touch of whimsy to your cultivation journey."
+        "name" "Illusory Trickster Card"
+        "price" 2500
+    ) (sdict 
+        "id" "xp_boost1"
+        "desc" "Embark on a **7-day** journey with a **5%** XP boost, cultivating ethereal energies for enlightenment."
+        "name" "Celestial Growth Elixir"
+        "price" 38888
+    ) (sdict 
+        "id" "xp_boost2"
+        "desc" "Extend your spectral growth over **7 days** with a **10%** XP boost."
+        "name" "Ephemeral Spectral Elixir"
+        "price" 71888
+    ) (sdict 
+        "id" "xp_boost3"
+        "desc" "Savor a **15%** XP enhancement for **7 enchanted days**, embracing the twilight radiance."
+        "name" "Twilight Radiance Tonic"
+        "price" 111888
+    ) (sdict 
+        "id" "xp_points"
+        "desc" "A vial containing rare Spectral Essence. Consume it to gain a substantial 1000 XP points, enhancing your otherworldly journey on the path of supernatural enlightenment."
+        "name" "Cultivation Essence"
+        "price" 10000))}}
+{{$explore := sdict
+"scenario1" (sdict "id" 1 "desc" "🎃 The Fog of Forgotten Souls rolls in, %s 🎃 You encounter two figures emerging from the mist. Which will you follow?"
+"options" (cslice
+    (sdict "choice" "🔮 Follow the Ghostly Sage" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The Ghostly Sage shares forgotten secrets. Gain +3000 spooky points and a Rare Item!" "spooky" 3000 "item" "treat_card" "descNoItem" "The sage's wisdom enriches your knowledge.")
+            (sdict "result" "negative" "desc" "The sage's wisdom comes with a curse. Lost -1000 spooky points!" "spooky" -1000)))
+    (sdict "choice" "🕯 Brave the Fog Alone" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You discover a hidden treasure chest. Gain +2000 spooky points and a Rare Item!" "spooky" 2000 "item" "xp_boost3" "descNoItem" "The chest reveals long-lost secrets.")
+            (sdict "result" "negative" "desc" "The fog confuses you, draining your energy. Lost -1500 spooky points." "spooky" -1500)))))
+
+"scenario2" (sdict "id" 2 "desc" "🌕 Under the eerie glow of the full moon, %s 🌕 You spot two enchanted pathways ahead. Which will you choose?"
+"options" (cslice
+    (sdict "choice" "🌲 Explore the Enchanted Grove" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You find magical herbs that boost your powers. Gain +2500 spooky points and a Rare Item!" "spooky" 2500 "item" "xp_boost2" "descNoItem" "The herbs enhance your abilities.")
+            (sdict "result" "negative" "desc" "Beware of the enchanted plants! Lost -2000 spooky points!" "spooky" -2000)))
+    (sdict "choice" "🌊 Cross the Mystical River" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The river grants you a blessing of speed. Gain +3000 spooky points and a Rare Item!" "spooky" 3000 "item" "mboss_bait" "descNoItem" "The blessing quickens your steps.")
+            (sdict "result" "negative" "desc" "The river’s currents pull you under. Lost -1500 spooky points!" "spooky" -1500)))))
+
+"scenario3" (sdict "id" 3 "desc" "🕷️ In the haunted forest, %s 🕷️ Two paths lie before you, each promising adventure. Which will you take?"
+"options" (cslice
+    (sdict "choice" "🦇 Investigate the Creepy Cabin" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "Inside, you uncover ancient relics. Gain +4000 spooky points and a Rare Item!" "spooky" 4000 "item" "treat_card" "descNoItem" "The relics whisper stories of the past.")
+            (sdict "result" "negative" "desc" "The cabin is a trap! Lost -2000 spooky points!" "spooky" -2000)))
+    (sdict "choice" "🌌 Follow the Whispering Shadows" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The shadows lead you to hidden treasures. Gain +3500 spooky points and a Rare Item!" "spooky" 3500 "item" "xp_boost1" "descNoItem" "The treasures reveal ancient wisdom.")
+            (sdict "result" "negative" "desc" "The shadows mislead you into a spider's lair. Lost -3000 spooky points!" "spooky" -3000)))))
+"scenario4" (sdict "id" 4 "desc" "⚰️ As you wander through the graveyard, %s ⚰️ Two tombstones catch your eye. Which will you investigate?"
+"options" (cslice
+    (sdict "choice" "🪦 Open the Tomb of Secrets" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The tomb reveals ancient scrolls. Gain +5000 spooky points and a Rare Item!" "spooky" 5000 "item" "xp_points" "descNoItem" "The scrolls contain powerful knowledge.")
+            (sdict "result" "negative" "desc" "A ghost emerges, cursing you! Lost -4000 spooky points!" "spooky" -4000)))
+    (sdict "choice" "🪴 Inspect the Weeping Willow" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "The tree grants you a vision of hidden paths. Gain +2500 spooky points and a Rare Item!" "spooky" 2500 "item" "mboss_bait" "descNoItem" "The vision opens new opportunities.")
+            (sdict "result" "negative" "desc" "The tree's tears ensnare you. Lost -2000 spooky points!" "spooky" -2000)))))
+
+"scenario5" (sdict "id" 5 "desc" "💀 Amidst the ruins of an ancient castle, %s 💀 Two doors stand before you. Which will you choose?"
+"options" (cslice
+    (sdict "choice" "🏰 Enter the Grand Hall" "id" 0
+    "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You find a treasure trove! Gain +6000 spooky points and a Rare Item!" "spooky" 6000 "item" "xp_boost2" "descNoItem" "The trove is filled with riches beyond imagination.")
+            (sdict "result" "negative" "desc" "The hall is cursed! Lost -5000 spooky points!" "spooky" -5000)))
+    (sdict "choice" "🛡️ Explore the Armory" "id" 1
+        "outcomes" (cslice
+            (sdict "result" "positive" "desc" "You discover powerful weapons. Gain +4000 spooky points and a Rare Item!" "spooky" 4000 "item" "treat_card" "descNoItem" "The weapons empower your journey.")
+            (sdict "result" "negative" "desc" "A trap triggers! Lost -3000 spooky points!" "spooky" -3000)))))
+}}
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{$data.Set "miniboss" $miniboss}}
+{{$data.Set "mobs" $mobs}}
+{{$data.Set "items" $items}}
+{{$data.Set "explore" $explore}}
+{{dbSet 0 "hal" $data}}Added Data1

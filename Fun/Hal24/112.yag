@@ -1,0 +1,90 @@
+command: add3
+{{$data := or (dbGet 0 "hal").Value sdict}}
+{{$trickHalf := (cslice
+		"⚖️ Greetings, brave %s! The Inversion Trick, a sorcerer of mystical transformation, now plays its symphony upon your ghostly ledger. With a flicker of otherworldly energy, your points undergo a mysterious halving. Enjoy the magical dance of inversion in your spectral journey!"
+		"⚖️ Valiant %s, the Inversion Trick beckons, a maestro of spectral mystique. As you embrace the mystical energies, your points undergo a cosmic halving. Revel in the intriguing twist revealed in the dance of the Inversion Trick. Enjoy the reversal!"
+		"⚖️ Greetings, seeker of mysteries, %s! The Inversion Trick, a master of spectral alchemy, now reveals its magic upon your ghostly ledger. With a cosmic twist, your points undergo a peculiar halving. Embrace the enchantment of inversion in your spectral journey!"
+		"⚖️ Noble %s, the Inversion Trick, a weaver of spectral threads, now graces your spectral ledger. With a cosmic twist, your points experience a mystical revelation: they are halved. The dance of inversion adds a magical touch to your spectral journey. Enjoy the symphony of opposites!"
+		"⚖️ Behold, noble %s! The Inversion Trick, a shaper of spectral destinies, extends its influence to your spectral ledger. With a mystical incantation, your points undergo a transformation—both are halved. A dance of spectral mysteries unfolds in the mirrored reflection of your spectral journey. Enjoy the intriguing inversion!"
+)}}
+{{$trickInv := (cslice
+		"🔄 Greetings, %s! The Inversion Trick, a master of reflection, now weaves its magic upon your spectral ledger. With a twist of spectral energy, your points undergo a reversal. Positive points become negative, and negative points become positive. A mirror image of your spectral journey awaits. Enjoy the inversion!"
+		"🔄 Behold, noble %s! The Inversion Trick, a shaper of realities, extends its influence to your spectral ledger. With a mystical incantation, your points undergo a transformation—positive becomes negative, and negative becomes positive. A dance of opposites unfolds in the mirrored reflection of your spectral journey."
+		"🔄 Valiant %s, the Inversion Trick beckons, a sorcerer of point reversal. As you embrace the mystical energies, your points undergo a cosmic shift. Positive turns negative, and negative turns positive. The ebb and flow of your spectral ledger mirror the dance of the Inversion Trick. Enjoy the reversal!"
+		"🔄 Greetings, seeker of mysteries, %s! The Inversion Trick, a maestro of spectral inversion, extends its influence to your ghostly ledger. With a twist of otherworldly energy, your points undergo a reversal—positive transforms into negative, and negative transforms into positive. Embrace the mystical symmetry of your spectral journey!"
+		"🔄 Noble %s, the Inversion Trick, a weaver of spectral threads, now graces your spectral ledger. With a cosmic twist, your points experience a reversal—positive becomes negative, and negative becomes positive. The dance of inversion adds a mystical touch to your spectral journey. Enjoy the symphony of opposites!"
+		"🔄 Greetings, %s! The Inversion Trick, a conductor of spectral reversal, now plays its symphony upon your ghostly ledger. With a flicker of otherworldly energy, your points undergo a transformation—positive becomes negative, and negative becomes positive. Embrace the magical dance of inversion in your spectral journey!"
+		"🔄 Oh, daring %s! The Inversion Trick, a sculptor of spectral energies, extends its influence to your spectral ledger. With a twist of ethereal magic, your points undergo a reversal—positive transforms into negative, and negative transforms into positive. Witness the magical inversion of your spectral journey!"
+		"🔄 Greetings, seeker of mysteries, %s! The Inversion Trick, a master of spectral alchemy, now reveals its magic upon your ghostly ledger. With a cosmic twist, your points undergo a transformation—positive becomes negative, and negative becomes positive. Embrace the enchantment of inversion in your spectral journey!"
+		"🔄 Behold, brave %s! The Inversion Trick, a conjurer of spectral reflections, now graces your spectral ledger. With a mystical incantation, your points undergo a reversal—positive transforms into negative, and negative transforms into positive. Enjoy the dance of opposites in your mystical spectral journey!"
+		"🔄 Noble %s, the Inversion Trick beckons, a maestro of spectral reversal. As you embrace the mystical energies, your points undergo a cosmic shift. Positive turns negative, and negative turns positive. The ebb and flow of your spectral ledger mirror the dance of the Inversion Trick. Enjoy the reversal!"
+)}}
+{{$trickNothing := (cslice 
+		"❌ Greetings, %s! You attempt to invoke the power of the Reset Trick, seeking a purification of your spectral ledger. However, the mystical energies remain dormant, and the spectral dance of renewal eludes you for now. Embrace the journey with your current spectral points, and may the whims of the spectral realm favor you in future endeavors!"
+		"❌ Alas, noble %s! As you reach out for the transformative magic of the Reset Trick, the ethereal forces seem to resist your plea for renewal. The dance of spectral cleansing remains still, and your points persist in their current state. Patience, adventurer, for the spectral realm holds many mysteries yet to unfold!"
+		"❌ Valiant %s, in your pursuit of spectral renewal through the Reset Trick, the mystical energies remain serene and untouched. The cosmic reset eludes your grasp for now, and your spectral ledger retains its current essence. Fear not, for the dance of renewal may sway in your favor in the unfolding chapters of your spectral journey!"
+		"❌ Greetings, seeker of mysteries, %s! As you beckon the magic of the Reset Trick, the spectral forces remain still. The cosmic reset, meant to cleanse your points, refrains from unveiling its magic. Embrace the mysteries of your current spectral journey, for the dance of renewal may yet weave its enchantment in unforeseen moments!"
+		"❌ Noble %s, in your attempt to invoke the power of the Reset Trick, the mystical energies stand serene, resisting the call for spectral cleansing. The dance of renewal remains silent, and your spectral ledger maintains its current essence. Patiently tread the spectral path, for the whims of the spectral realm may unfold in unexpected ways!"
+		"❌ Greetings, %s! As you reach for the transformative magic of the Reset Trick, the ethereal forces remain still, denying the expected cosmic reset. The dance of spectral renewal eludes your grasp for now, and your points persist in their current form. Embrace the mysteries of the spectral journey, for the dance of renewal may yet unfold in future chapters!"
+		"❌ Oh, daring %s! In your pursuit of spectral cleansing through the Reset Trick, the mystical energies remain undisturbed. The dance of renewal, meant to transform your points, remains still, and your spectral ledger retains its current essence. Patiently traverse the spectral realm, for the dance of renewal may sway in your favor when least expected!"
+		"❌ Greetings, seeker of mysteries, %s! As you invoke the power of the Reset Trick, the spectral forces remain undisturbed. The cosmic reset refrains from unfolding its magic, and your spectral ledger retains its current essence. Embrace the mysteries of your current spectral journey, for the dance of renewal may yet unveil its enchantment in the unfolding chapters!"
+		"❌ Behold, brave %s! In your attempt to invoke the power of the Reset Trick, the mystical energies remain still, denying the expected cosmic reset. The dance of renewal remains silent, and your spectral ledger maintains its current essence. Patiently tread the spectral path, for the whims of the spectral realm may unfold in unexpected ways!"
+		"❌ Noble %s, in your pursuit of spectral cleansing, the mystical energies resist the call for renewal. The cosmic reset remains silent, and your spectral ledger maintains its current essence. Patiently traverse the spectral realm, for the dance of renewal may yet unfold in future chapters!"
+)}}
+{{$trickReset := (cslice
+		"🌀 Greetings, %s! The Reset Trick, a master of spectral purification, now resets your spectral ledger to zero. With a purification ritual, your points are cleansed, offering a fresh start to your spectral journey. Embrace the purity of a blank slate and commence anew!"
+		"🌀 Behold, noble %s! The Reset Trick, a weaver of spectral rejuvenation, extends its influence to your ghostly ledger. With a mystical incantation, your points are reset to zero. The symphony of the Reset Trick adds a touch of renewal to your spectral journey. Embrace the purified slate!"
+		"🌀 Valiant %s, the Reset Trick beckons, a sorcerer of point renewal. As you embrace the mystical energies, your points undergo a cosmic reset. Witness the magical renewal as your spectral ledger is cleansed by the Reset Trick. Enjoy the fresh beginning!"
+		"🌀 Greetings, seeker of mysteries, %s! The Reset Trick, a maestro of spectral cleansing, now reveals its magic upon your ghostly ledger. With a cosmic purification, your points are reset to zero. Embrace the enchantment of a blank slate in your spectral journey!"
+		"🌀 Noble %s, the Reset Trick, a conjurer of spectral renewal, now graces your spectral ledger. With a mystical incantation, your points undergo a cleansing reset. The dance of the Reset Trick adds a touch of magical renewal to your spectral journey. Enjoy the symphony of purity!"
+		"🌀 Greetings, %s! The Reset Trick, a conductor of spectral rejuvenation, now plays its symphony upon your ghostly ledger. With a flicker of otherworldly energy, your points are reset to zero. Embrace the mystical dance of renewal in your spectral journey!"
+		"🌀 Oh, daring %s! The Reset Trick, a sculptor of spectral energies, extends its influence to your spectral ledger. With a surge of ethereal magic, your points undergo a cleansing reset. Witness the magical renewal as your spectral ledger begins anew. Enjoy the purified journey!"
+		"🌀 Greetings, seeker of mysteries, %s! The Reset Trick, a master of spectral cleansing, now reveals its magic upon your ghostly ledger. With a cosmic purification, your points are reset to zero. Embrace the enchantment of a blank slate in your spectral journey!"
+		"🌀 Behold, brave %s! The Reset Trick, a conjurer of spectral renewal, now graces your spectral ledger. With a mystical incantation, your points undergo a cleansing reset. Enjoy the dance of magical renewal in your mystical spectral journey!"
+		"🌀 Noble %s, the Reset Trick beckons, a maestro of spectral cleansing. As you embrace the mystical energies, your points undergo a cosmic reset. Witness the magical renewal as your spectral ledger is cleansed by the Reset Trick. Enjoy the fresh beginning!"
+)}}
+{{$pets := cslice
+  (sdict "name" "Spectral Fox" "effect" "+10% spooky points from mobs." "img" "https://i.vgy.me/osFPnX.png")
+  (sdict "name" "Ethereal Owl" "effect" "Increases item drop chance by 20% during explorations." "img" "https://i.vgy.me/5fNYOL.png")
+  (sdict "name" "Ghostly Tiger" "effect" "+5% damage to the final boss." "img" "https://i.vgy.me/rUuYzF.png")
+  (sdict "name" "Phantom Rabbit" "effect" "boosts drop rates by 10% from miniboss." "img" "https://i.vgy.me/lOH3b5.png")
+  (sdict "name" "Shadow Cat" "effect" "Increases the chance of encountering rare items by 15% in exploration." "img" "https://i.vgy.me/eh3LRc.png")
+  (sdict "name" "Mystic Bat" "effect" "+30% spooky points when defeating mobs." "img" "https://i.vgy.me/oSOJfa.png")
+  (sdict "name" "Ancient Dragon" "effect" "increases damage by +20 against the final boss." "img" "https://i.vgy.me/rPXD9W.png")
+}}
+{{$data.explore.Set "scenario6" (sdict "id" 6 "desc" "🏜️ %s stand at the edge of the mystical dunes, feeling the ancient energy swirling around. As you embark on your journey, the sands whisper secrets of a hidden blessing or curse. What path will you choose? 🏜️"
+  "options" (cslice 
+    (sdict "choice" "🧭 Explore the Dunes" "id" 0 
+      "outcomes" (cslice 
+            (sdict "result" "positive" "desc" "You unearth the Ethereal Blessing of the Winds. Gain +10,000 spooky points." "spooky" 10000 "item" "xp_points" "descNoItem" "You feel a rush of wind, granting you 10,000 spooky points.")
+            (sdict "result" "negative" "desc" "The sands shift beneath you, leading you into a hidden trap! You find yourself ensnared in a web of quicksand. Lose -5000 spooky points!" "spooky" -5000 )))
+    (sdict "choice" "🌬️ Follow the Whispers" "id" 1 
+      "outcomes" (cslice 
+            (sdict "result" "positive" "desc" "Heeding the whispers of the desert winds, you uncover the secret location of the Ethereal Blessing, enhancing your journey. Gain 8000 spooky points.." "spooky" 9000 "item" "xp_boost3" "descNoItem" "You are enveloped in a soft breeze, invigorating your spirit.")
+            (sdict "result" "negative" "desc" "The whispers lead you astray, and you stumble into a cursed spot of the sands, facing the Curse of the Shifting Sands. Lose -5000 spooky points!" "spooky" -5000 )))))}}
+{{$data.explore.Set "scenario7" (sdict "id" 7 "desc" "🌳 %s stand before the legendary Mystic Tree, its bark shimmering with ethereal energy. Can you gather its bark and harness its power?" 
+  "options" (cslice 
+    (sdict "choice" "🌿 Carefully Harvest the Bark" "id" 0 
+     "outcomes" (cslice 
+        (sdict "result" "positive" "desc" "You successfully harvest the bark, feeling a surge of energy. Gain +8000 spooky points.." "spooky" 8000 "item" "xp_boost3" "descNoItem" "The bark's essence enhances your spirit.")
+        (sdict "result" "negative" "desc" "The tree resists your attempts! You lose balance and fall. Lost -5000 spooky points! and Curse of the Withering Roots." "spooky" -5000)))
+    (sdict "choice" "🍃 Examine the Surroundings" "id" 1 
+      "outcomes" (cslice 
+        (sdict "result" "positive" "desc" "You discover hidden herbs nearby that amplify the tree's power. Gain +3500 spooky points." "spooky" 3500 "item" "xp_boost2" "descNoItem" "The herbs enhance your abilities.")
+        (sdict "result" "negative" "desc" "You disturb a sleeping creature! It attacks, causing you to lose -3000 spooky points! and Curse of the Withering Roots" "spooky" -3000)))))}}
+{{$data.explore.Set "scenario8" (sdict "id" 8 "desc" "❄️ %s stand at the edge of the Treacherous Frozen Lake, its surface glistening like shattered glass. Will you brave the icy depths to uncover its secrets?" 
+  "options" (cslice 
+    (sdict "choice" "🌊 Carefully Cross the Ice" "id" 0 
+      "outcomes" (cslice 
+        (sdict "result" "positive" "desc" "You skillfully navigate the ice, discovering a hidden cave beneath the surface. Gain +6000 spooky points." "spooky" 6000 "item" "xp_boost2" "descNoItem" "The crystal radiates a chilling power.")
+        (sdict "result" "negative" "desc" "The ice cracks beneath you! You fall into the freezing water, losing -4000 spooky points!" "spooky" -4000)))
+    (sdict "choice" "🏔️ Inspect the Frozen Edge" "id" 1
+      "outcomes" (cslice 
+        (sdict "result" "positive" "desc" "You discover a hidden stash of ancient relics at the frozen edge. Gain +5000 spooky points." "spooky" 5000 "item" "mboss_bait" "descNoItem" "The relic holds mysterious powers.")
+        (sdict "result" "negative" "desc" "You trigger a minor avalanche of ice! Lose -2500 spooky points!" "spooky" -2500)))))}}
+{{$data.Set "trickHalf" $trickHalf}}
+{{$data.Set "trickInv" $trickInv}}
+{{$data.Set "trickNoting" $trickNothing}}
+{{$data.Set "trickReset" $trickReset}}
+{{$data.Set "pets" $pets}}
+{{dbSet 0 "hal" $data}}Added Data3
